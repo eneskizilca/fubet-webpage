@@ -54,7 +54,7 @@ export default function Dashboard() {
             </div>
 
             {/* Son Aktiviteler */}
-            <div className="bg-red rounded-lg shadow-md p-6">
+            <div className="bg-white rounded-lg shadow-md p-6">
               <h3 className="text-xl font-semibold mb-4 text-[#78123e]">Son Aktiviteler</h3>
               <div className="space-y-4">
                 <div className="border-b pb-2">

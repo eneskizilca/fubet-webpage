@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "FUBET - Fırat Üniversitesi Bilişim ve Eğitim Topluluğu",
+  title: "FÜBET - Fırat Üniversitesi Bilişim ve Eğitim Topluluğu",
   description: "Fırat Üniversitesi Bilişim ve Eğitim Topluluğu resmi web sitesi",
 };
 
@@ -16,6 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="tr">
+      <head>
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );

@@ -68,9 +68,30 @@ export default function RegisterPage() {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Ad ve Soyad yan yana */}
+          <div className="flex gap-x-4">
+            <input
+              name="firstName"
+              placeholder="Ad"
+              type="text"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+              className="input-style w-1/2"
+            />
+            <input
+              name="lastName"
+              placeholder="Soyad"
+              type="text"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+              className="input-style w-1/2"
+            />
+          </div>
+
+          {/* Diğer inputlar aynı şekilde devam ediyor */}
           {[
-            { name: 'firstName', placeholder: 'Ad', type: 'text' },
-            { name: 'lastName', placeholder: 'Soyad', type: 'text' },
             { name: 'studentNumber', placeholder: 'Okul Numarası', type: 'text' },
             { name: 'phone', placeholder: 'Telefon Numarası', type: 'text' },
             { name: 'email', placeholder: 'Öğrenci Maili', type: 'email' },
@@ -88,6 +109,7 @@ export default function RegisterPage() {
               className="input-style"
             />
           ))}
+
 
           <select
             name="classYear"

@@ -34,9 +34,9 @@ export default function ForgotPasswordPage() {
           className="w-14 h-14 object-contain"
         />
         <div className="border-l-4 border-white pl-3 text-white flex flex-col justify-center space-y-0.5 leading-tight">
-          <p className="text-xs font-semibold tracking-wide">FIRAT ÜNİVERSİTESİ</p>
+          <p className="text-base sm:text-lg font-bold tracking-tight">FIRAT ÜNİVERSİTESİ</p>
           <p className="text-base sm:text-lg font-bold tracking-tight">BİLİŞİM VE EĞİTİM</p>
-          <p className="text-xs font-semibold tracking-wide">TOPLULUĞU</p>
+          <p className="text-base sm:text-lg font-bold tracking-tight">TOPLULUĞU</p>
         </div>
       </div>
 

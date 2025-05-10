@@ -14,6 +14,9 @@ module.exports = {
         white: '#ffffff',
         black: '#000000',
       },
+      fontFamily: {
+        sans: ['Roboto Condensed', 'sans-serif'],
+      },
     },
   },
   safelist: [

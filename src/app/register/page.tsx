@@ -42,18 +42,20 @@ export default function RegisterPage() {
 
       {/* Sol Üst Logo ve Yazı */}
       <div className="flex items-center space-x-3 absolute top-6 left-6 z-50 animate-slide-in-left">
-        <img
-          src="/logo.png"
-          alt="FÜBET Logo"
-          width={80}
-          height={80}
-          className="w-14 h-14 object-contain"
-        />
-        <div className="border-l-4 border-white pl-3 text-white flex flex-col justify-center space-y-0.5 leading-tight">
+        <Link href="/">
+          <img
+            src="/logo.png"
+            alt="FÜBET Logo"
+            width={80}
+            height={80}
+            className="w-14 h-14 object-contain"
+          />
+        </Link>
+        <Link href="/" className="border-l-4 border-white pl-3 text-white flex flex-col justify-center space-y-0.5 leading-tight">
           <p className="text-base sm:text-lg font-bold tracking-tight">FIRAT ÜNİVERSİTESİ</p>
           <p className="text-base sm:text-lg font-bold tracking-tight">BİLİŞİM VE EĞİTİM</p>
           <p className="text-base sm:text-lg font-bold tracking-tight">TOPLULUĞU</p>
-        </div>
+        </Link>
       </div>
 
       {/* Arka plan efektleri */}

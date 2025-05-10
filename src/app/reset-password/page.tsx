@@ -1,6 +1,7 @@
 'use client';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -48,7 +49,25 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#172c5c] to-[#78123e] px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#172c5c] to-[#78123e] px-4 overflow-hidden relative">
+      {/* Sol Üst Logo ve Yazı */}
+      <div className="flex items-center space-x-3 absolute top-6 left-6 z-50 animate-slide-in-left">
+        <Link href="/">
+          <img
+            src="/logo.png"
+            alt="FÜBET Logo"
+            width={80}
+            height={80}
+            className="w-14 h-14 object-contain"
+          />
+        </Link>
+        <Link href="/" className="border-l-4 border-white pl-3 text-white flex flex-col justify-center space-y-0.5 leading-tight">
+          <p className="text-base sm:text-lg font-bold tracking-tight">FIRAT ÜNİVERSİTESİ</p>
+          <p className="text-base sm:text-lg font-bold tracking-tight">BİLİŞİM VE EĞİTİM</p>
+          <p className="text-base sm:text-lg font-bold tracking-tight">TOPLULUĞU</p>
+        </Link>
+      </div>
+
       <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-[#172c5c] mb-6">
           Yeni Şifre Belirle

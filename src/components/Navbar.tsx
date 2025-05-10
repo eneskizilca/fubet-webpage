@@ -19,7 +19,7 @@ export default function Navbar() {
                 height={40}
                 className="h-10 w-auto"
               />
-              <span className="ml-2 text-xl font-bold text-[#78123e]">BET</span>
+              <span className="ml-2 text-xl font-bold text-[#78123e]">FÜBET</span>
             </Link>
           </div>
 

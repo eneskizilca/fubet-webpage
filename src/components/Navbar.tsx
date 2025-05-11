@@ -1,14 +1,26 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useRef } from 'react';
+import { useState, useRef, createContext, useContext } from 'react';
+import { useSuggestEventHover } from '../context/SuggestEventHoverContext';
+import { useRouter } from 'next/navigation';
 
 const isAuthenticated = false;
+
+export const SuggestEventHoverContext = createContext({
+  isSuggestEventHovered: false,
+  setIsSuggestEventHovered: (v: boolean) => {},
+});
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [showSpotlight, setShowSpotlight] = useState(false);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const spotlightTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  const { isSuggestEventHovered, setIsSuggestEventHovered } = useSuggestEventHover();
+  const [showSuggestModal, setShowSuggestModal] = useState(false);
+  const router = useRouter();
 
   const handleDropdownClick = (dropdownName: string) => {
     if (activeDropdown === dropdownName) {
@@ -28,7 +40,20 @@ export default function Navbar() {
   const handleDropdownMouseLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 300); // 300ms delay before closing
+    }, 150); // 300ms'den 150ms'ye düşürüldü
+  };
+
+  const handleSpotlightEnter = () => {
+    if (spotlightTimeoutRef.current) {
+      clearTimeout(spotlightTimeoutRef.current);
+    }
+    setShowSpotlight(true);
+  };
+
+  const handleSpotlightLeave = () => {
+    spotlightTimeoutRef.current = setTimeout(() => {
+      setShowSpotlight(false);
+    }, 100); // 300ms'den 100ms'ye düşürüldü
   };
 
   return (
@@ -59,7 +84,7 @@ export default function Navbar() {
               >
                 Etkinlikler
               </button>
-              <div className={`absolute left-0 mt-2 w-56 bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-300 z-50 ${
+              <div className={`absolute left-0 mt-2 w-fit min-w-max bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-200 z-50 ${
                 activeDropdown === 'etkinlikler' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}>
                 <Link 
@@ -77,6 +102,75 @@ export default function Navbar() {
               </div>
             </div>
 
+            {/* Etkinlik Öner */}
+            <div className="relative"
+              onMouseEnter={() => setIsSuggestEventHovered(true)}
+              onMouseLeave={() => setIsSuggestEventHovered(false)}
+            >
+              <button
+                type="button"
+                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-300 flex items-center gap-2 group cursor-pointer"
+                onClick={() => setShowSuggestModal(true)}
+              >
+                Etkinlik Öner
+                <div className="flex items-center justify-center relative">
+                  <Image
+                    src="/ai2.png"
+                    alt="AI Icon"
+                    width={30}
+                    height={30}
+                    className="relative z-10 group-hover:scale-110 transition-transform duration-300 group-hover:animate-float"
+                  />
+                </div>
+              </button>
+              {/* Speech Bubble Popup */}
+              <div 
+                className={`absolute top-[120%] left-0 w-[300px] bg-white/90 transition-all duration-200 transform border border-white/20 rounded-xl shadow-lg ${
+                  isSuggestEventHovered && !showSuggestModal ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
+                }`}
+              >
+                <div className="p-4 text-center">
+                  <div className="text-lg font-bold text-[#78123e] mb-2">
+                    Yapay Zekayı Denemeyi Unutma !
+                  </div>
+                  <div className="text-sm text-gray-700">
+                    Senin seçimlerin ve yapay zekanın sihirli fikirleri ile bir etkinlik önerisi yarat!
+                  </div>
+                </div>
+                <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white/90 transform rotate-45 border-r border-b border-white/20"></div>
+              </div>
+              {/* Modal */}
+              {showSuggestModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); }}>
+                  <div
+                    className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-6 min-w-[320px] max-w-[90vw] relative"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <button
+                      className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl"
+                      onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); }}
+                      aria-label="Kapat"
+                    >
+                      ×
+                    </button>
+                    <h2 className="text-2xl font-bold text-[#78123e] mb-2 text-center">Etkinlik Öner</h2>
+                    <button
+                      className="w-full py-4 rounded-xl bg-[#78123e] text-white text-lg font-bold shadow hover:bg-[#5a0e2c] transition mb-2"
+                      onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); router.push('/suggest-event'); }}
+                    >
+                      Bir Fikrim Var!
+                    </button>
+                    <button
+                      className="w-full py-4 rounded-xl bg-white border-2 border-[#78123e] text-[#78123e] text-lg font-bold shadow hover:bg-[#f3e6ee] transition"
+                      onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); router.push('/suggest-event-with-ai'); }}
+                    >
+                      Bir Fikir Oluşturalım!
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Hakkımızda */}
             <div 
               className="relative"
@@ -89,7 +183,7 @@ export default function Navbar() {
               >
                 Hakkımızda
               </button>
-              <div className={`absolute left-0 mt-2 w-56 bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-300 z-50 ${
+              <div className={`absolute left-0 mt-2 w-fit min-w-max bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-200 z-50 ${
                 activeDropdown === 'hakkimizda' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}>
                 <Link 
@@ -114,7 +208,7 @@ export default function Navbar() {
                 <button className="bg-[#78123e] text-white px-6 py-1.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105">Çıkış Yap</button>
               </>
             ) : (
-              <>
+              <div className="flex gap-2">
                 <Link 
                   href="/login" 
                   className="bg-[#78123e] text-white px-6 py-1.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 font-medium"
@@ -127,7 +221,7 @@ export default function Navbar() {
                 >
                   Kayıt Ol
                 </Link>
-              </>
+              </div>
             )}
           </div>
 
@@ -170,7 +264,7 @@ export default function Navbar() {
               <button className="block w-full text-center bg-[#78123e] text-white px-6 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105">Çıkış Yap</button>
             </>
           ) : (
-            <>
+            <div className="flex gap-2">
               <Link 
                 href="/login" 
                 className="block bg-[#78123e] text-white px-6 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 font-medium text-center"
@@ -183,10 +277,69 @@ export default function Navbar() {
               >
                 Kayıt Ol
               </Link>
-            </>
+            </div>
           )}
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes spin-slow {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes float {
+          0% {
+            transform: translateY(0px) scale(1);
+          }
+          50% {
+            transform: translateY(-2px) scale(1.1);
+          }
+          100% {
+            transform: translateY(0px) scale(1);
+          }
+        }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .clip-path-triangle-in {
+          clip-path: polygon(0 0, 100% 50%, 0 100%);
+        }
+
+        .clip-path-triangle-out {
+          clip-path: polygon(100% 0, 0 50%, 100% 100%);
+        }
+
+        .animate-spin-slow {
+          animation: spin-slow 3s linear infinite;
+        }
+
+        .animate-float {
+          animation: float 2s ease-in-out infinite;
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-out forwards;
+        }
+
+        .animate-fade-in-delay {
+          animation: fade-in 0.5s ease-out 0.2s forwards;
+          opacity: 0;
+        }
+      `}</style>
     </nav>
   );
 } 

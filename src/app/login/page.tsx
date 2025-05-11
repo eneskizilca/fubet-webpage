@@ -43,7 +43,7 @@ export default function LoginPage() {
         <div className="w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.05)_0%,transparent_70%),radial-gradient(circle_at_80%_80%,rgba(255,255,255,0.05)_0%,transparent_70%)] animate-pulse"></div>
       </div>
 
-      <div className="z-10 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <div className="z-10 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md animate-fade-in-down">
         <h2 className="text-2xl font-bold text-center text-[#172c5c] mb-6">Giriş Yap</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,35 +86,50 @@ export default function LoginPage() {
       </div>
 
       <style jsx>{`
-  @keyframes slide-in-left {
-    0% {
-      transform: translateX(-100px);
-      opacity: 0;
-    }
-    100% {
-      transform: translateX(0);
-      opacity: 1;
-    }
-  }
+        @keyframes slide-in-left {
+          0% {
+            transform: translateX(-100px);
+            opacity: 0;
+          }
+          100% {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
 
-  .animate-slide-in-left {
-    animation: slide-in-left 0.8s ease-out forwards;
-  }
+        @keyframes fade-in-down {
+          0% {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
 
-  .input-style {
-    width: 100%;
-    padding: 0.75rem 1rem;
-    border-radius: 1rem;
-    border: 1px solid #ccc;
-    outline: none;
-    background-color: white;
-    transition: 0.2s;
-  }
-  .input-style:focus {
-    border-color: #78123e;
-    box-shadow: 0 0 0 2px #78123e40;
-  }
-`}</style>
+        .animate-slide-in-left {
+          animation: slide-in-left 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out forwards;
+        }
+
+        .input-style {
+          width: 100%;
+          padding: 0.75rem 1rem;
+          border-radius: 1rem;
+          border: 1px solid #ccc;
+          outline: none;
+          background-color: white;
+          transition: 0.2s;
+        }
+        .input-style:focus {
+          border-color: #78123e;
+          box-shadow: 0 0 0 2px #78123e40;
+        }
+      `}</style>
 
 
     </div>

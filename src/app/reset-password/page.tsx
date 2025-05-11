@@ -68,7 +68,7 @@ export default function ResetPasswordPage() {
         </Link>
       </div>
 
-      <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md animate-fade-in-down">
         <h2 className="text-2xl font-bold text-center text-[#172c5c] mb-6">
           Yeni Şifre Belirle
         </h2>
@@ -117,6 +117,21 @@ export default function ResetPasswordPage() {
       </div>
 
       <style jsx>{`
+        @keyframes fade-in-down {
+          0% {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out forwards;
+        }
+
         .input-style {
           width: 100%;
           padding: 0.75rem 1rem;

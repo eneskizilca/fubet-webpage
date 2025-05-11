@@ -64,7 +64,7 @@ export default function RegisterPage() {
       </div>
 
       {/* Form alanı */}
-      <div className="z-10 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md">
+      <div className="z-10 bg-white/90 backdrop-blur-md p-8 rounded-2xl shadow-xl w-full max-w-md animate-fade-in-down">
         <h2 className="text-2xl font-bold text-center text-[#172c5c] mb-6">
           Topluluğumuza Katıl
         </h2>
@@ -185,8 +185,23 @@ export default function RegisterPage() {
           }
         }
 
+        @keyframes fade-in-down {
+          0% {
+            transform: translateY(-20px);
+            opacity: 0;
+          }
+          100% {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+
         .animate-slide-in-left {
           animation: slide-in-left 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in-down {
+          animation: fade-in-down 0.8s ease-out forwards;
         }
 
         .input-style {

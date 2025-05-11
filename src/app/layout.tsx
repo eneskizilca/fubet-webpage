@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { SuggestEventHoverProvider } from '../context/SuggestEventHoverContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,11 @@ export default function RootLayout({
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
       </head>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        <SuggestEventHoverProvider>
+          {children}
+        </SuggestEventHoverProvider>
+      </body>
     </html>
   );
 }

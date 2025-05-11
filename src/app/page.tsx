@@ -4,22 +4,16 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { Code, Building2, Users2 } from 'lucide-react';
 import HomeAnimatedSections from '@/components/HomeAnimatedSections';
-import { useContext } from 'react';
-import { useSuggestEventHover } from '../context/SuggestEventHoverContext';
-
 
 export default function Home() {
-  const { isSuggestEventHovered } = useSuggestEventHover();
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative flex flex-col items-center justify-center text-center h-[52vh] bg-gradient-to-br from-[#172c5c] to-[#78123e]">
           <div className="z-10 flex flex-col items-center justify-center w-full h-full px-4">
-            <img src={isSuggestEventHovered ? '/ai-logo-gif-1.gif' : '/logo.png'} alt="FÜBET Logo" width={144} height={144} className="mx-auto mb-4 animate-fade-in-down" style={{ animationDelay: '0.1s', animationFillMode: 'both' }} />
+            <img src="/logo.png" alt="FÜBET Logo" width={144} height={144} className="mx-auto mb-4 animate-fade-in-down" style={{ animationDelay: '0.1s', animationFillMode: 'both' }} />
             <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-lg animate-fade-in-down" style={{ animationDelay: '0.4s', animationFillMode: 'both' }}>
               Fırat Üniversitesi Bilişim ve Eğitim Topluluğu
             </h1>
@@ -71,7 +65,6 @@ export default function Home() {
         {/* Etkinliklerimizden Kareler Slider */}
         <HomeAnimatedSections />
       </main>
-
       <Footer />
     </div>
   );

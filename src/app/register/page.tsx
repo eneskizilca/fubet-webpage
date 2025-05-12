@@ -96,7 +96,7 @@ export default function RegisterPage() {
           {[
             { name: 'studentNumber', placeholder: 'Okul Numarası', type: 'text' },
             { name: 'phone', placeholder: 'Telefon Numarası', type: 'text' },
-            { name: 'email', placeholder: 'Öğrenci Maili', type: 'email' },
+            { name: 'email', placeholder: 'Öğrenci Maili (@firat.edu.tr\'li mailiniz)', type: 'email' },
             { name: 'faculty', placeholder: 'Fakülte', type: 'text' },
             { name: 'department', placeholder: 'Bölüm', type: 'text' },
           ].map((input, idx) => (
@@ -130,7 +130,6 @@ export default function RegisterPage() {
             <option value="4">4. Sınıf</option>
             <option value="5">5. Sınıf</option>
             <option value="6">6. Sınıf</option>
-            <option value="7">7. Sınıf</option>
             <option value="Yüksek Lisans">Yüksek Lisans</option>
           </select>
 

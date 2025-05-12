@@ -78,12 +78,12 @@ export default function Navbar() {
               onMouseEnter={() => handleDropdownMouseEnter('etkinlikler')}
               onMouseLeave={handleDropdownMouseLeave}
             >
-              <button 
-                onClick={() => handleDropdownClick('etkinlikler')}
+              <Link 
+                href="/events"
                 className="text-gray-700 hover:text-[#78123e] font-medium transition duration-300 cursor-pointer"
               >
                 Etkinlikler
-              </button>
+              </Link>
               <div className={`absolute left-0 mt-2 w-fit min-w-max bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-200 z-50 ${
                 activeDropdown === 'etkinlikler' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}>
@@ -245,7 +245,7 @@ export default function Navbar() {
         <div className="md:hidden bg-white px-4 py-3 space-y-2 shadow-md">
           <Link href="/" className="block text-gray-700">Ana Sayfa</Link>
           <div>
-            <p className="font-medium text-gray-700">Etkinlikler</p>
+            <Link href="/events" className="block text-gray-700">Etkinlikler</Link>
             <div className="ml-4 space-y-1">
               <Link href="/events/calendar" className="block text-sm text-gray-600">Etkinlik Takvimi</Link>
               <Link href="/events/past" className="block text-sm text-gray-600">Geçmiş Etkinlikler</Link>

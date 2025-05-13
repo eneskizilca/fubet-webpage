@@ -38,16 +38,16 @@ export default function Dashboard() {
             <div className="bg-white rounded-lg shadow-md p-6 lg:col-span-2">
               <h3 className="text-xl font-semibold mb-4 text-[#78123e]">Hızlı İşlemler</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors">
+                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors cursor-pointer">
                   Etkinlik Ekle
                 </button>
-                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors">
+                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors cursor-pointer">
                   Duyuru Ekle
                 </button>
-                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors">
+                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors cursor-pointer">
                   Üye Yönetimi
                 </button>
-                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors">
+                <button className="bg-[#78123e] text-white rounded-xl px-4 py-2 hover:bg-[#5a0e2e] transition-colors cursor-pointer">
                   Ayarlar
                 </button>
               </div>

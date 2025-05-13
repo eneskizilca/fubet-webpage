@@ -44,7 +44,7 @@ export default function SuggestEventPage() {
           </div>
           <button
             type="submit"
-            className="w-full py-3 rounded-xl bg-[#78123e] text-white text-lg font-bold shadow hover:bg-[#5a0e2c] transition"
+            className="w-full py-3 rounded-xl bg-[#78123e] text-white text-lg font-bold shadow hover:bg-[#5a0e2c] transition cursor-pointer"
           >
             Gönder
           </button>

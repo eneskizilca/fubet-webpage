@@ -78,7 +78,7 @@ export default function ForgotPasswordPage() {
 
             <button
               type="submit"
-              className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg"
+              className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg cursor-pointer"
             >
               Sıfırlama Bağlantısı Gönder
             </button>

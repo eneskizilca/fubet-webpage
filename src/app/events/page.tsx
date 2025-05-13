@@ -77,7 +77,7 @@ export default function EventsPage() {
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-4 py-2 rounded-full transition-colors ${
+            className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
               selectedCategory === 'all'
                 ? 'bg-white text-[#172c5c]'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -87,7 +87,7 @@ export default function EventsPage() {
           </button>
           <button
             onClick={() => setSelectedCategory('Yazılım Eğitimleri')}
-            className={`px-4 py-2 rounded-full transition-colors ${
+            className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
               selectedCategory === 'Yazılım Eğitimleri'
                 ? 'bg-white text-[#172c5c]'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -97,7 +97,7 @@ export default function EventsPage() {
           </button>
           <button
             onClick={() => setSelectedCategory('Teknik Geziler')}
-            className={`px-4 py-2 rounded-full transition-colors ${
+            className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
               selectedCategory === 'Teknik Geziler'
                 ? 'bg-white text-[#172c5c]'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -107,7 +107,7 @@ export default function EventsPage() {
           </button>
           <button
             onClick={() => setSelectedCategory('Konferanslar')}
-            className={`px-4 py-2 rounded-full transition-colors ${
+            className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
               selectedCategory === 'Konferanslar'
                 ? 'bg-white text-[#172c5c]'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -117,7 +117,7 @@ export default function EventsPage() {
           </button>
           <button
             onClick={() => setSelectedCategory('Sosyal Faaliyetler')}
-            className={`px-4 py-2 rounded-full transition-colors ${
+            className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
               selectedCategory === 'Sosyal Faaliyetler'
                 ? 'bg-white text-[#172c5c]'
                 : 'bg-white/10 text-white hover:bg-white/20'
@@ -162,7 +162,7 @@ export default function EventsPage() {
                   </p>
                 </div>
                 <p className="mt-4 text-gray-600">{event.description}</p>
-                <button className="mt-6 w-full bg-[#78123e] text-white py-2 rounded-xl hover:bg-[#601031] transition-colors">
+                <button className="mt-6 w-full bg-[#78123e] text-white py-2 rounded-xl hover:bg-[#601031] transition-colors cursor-pointer">
                   Detayları Gör
                 </button>
               </div>

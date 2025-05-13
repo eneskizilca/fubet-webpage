@@ -66,7 +66,7 @@ export default function LoginPage() {
             className="input-style"
           />
 
-          <button type="submit" className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg">
+          <button type="submit" className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg cursor-pointer">
             Giriş Yap
           </button>
         </form>

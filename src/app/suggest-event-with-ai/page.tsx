@@ -196,14 +196,14 @@ export default function SuggestEventWithAiPage() {
             {/* Navigation */}
             <div className="flex gap-5 mt-1">
               <button
-                className="px-7 py-2.5 rounded-lg bg-gray-200 text-gray-700 font-bold text-base disabled:opacity-50 shadow"
+                className="px-7 py-2.5 rounded-lg bg-gray-200 text-gray-700 font-bold text-base disabled:opacity-50 shadow cursor-pointer"
                 onClick={() => setStep(s => Math.max(0, s - 1))}
                 disabled={step === 0 || loading}
               >
                 Geri
               </button>
               <button
-                className="px-7 py-2.5 rounded-lg bg-[#78123e] text-white font-bold text-base disabled:opacity-50 shadow"
+                className="px-7 py-2.5 rounded-lg bg-[#78123e] text-white font-bold text-base disabled:opacity-50 shadow cursor-pointer"
                 onClick={step === QUESTIONS.length - 1 ? handleFinish : () => setStep(s => Math.min(QUESTIONS.length - 1, s + 1))}
                 disabled={!canProceed || loading}
               >

@@ -16,6 +16,7 @@ export default function RegisterPage() {
     classYear: '',
     birthDate: '',
     password: '',
+    passwordConfirmation: '',
   });
 
   const [error, setError] = useState('');
@@ -27,29 +28,85 @@ export default function RegisterPage() {
     setError('');
   };
 
+  const validateForm = () => {
+    // Öğrenci numarası kontrolü
+    if (!/^\d{9}$/.test(formData.studentNumber)) {
+      setError('Öğrenci numarası 9 karakter olmalıdır.');
+      return false;
+    }
+
+    // Telefon numarası kontrolü
+    if (!/^0\d{10}$/.test(formData.phone)) {
+      setError('Telefon numarası 0 ile başlamalı ve 11 karakter olmalıdır.');
+      return false;
+    }
+
+    // Email kontrolü
+    if (!formData.email.endsWith('@firat.edu.tr')) {
+      setError('Email adresi @firat.edu.tr ile bitmelidir.');
+      return false;
+    }
+
+    // Sınıf kontrolü
+    const classYear = parseInt(formData.classYear);
+    if (isNaN(classYear) || classYear < 1 || classYear > 6) {
+      setError('Sınıf 1-6 arasında olmalıdır.');
+      return false;
+    }
+
+    // Doğum tarihi kontrolü
+    const birthDate = new Date(formData.birthDate);
+    const today = new Date();
+    if (birthDate >= today) {
+      setError('Doğum tarihi bugünden önce olmalıdır.');
+      return false;
+    }
+
+    // Şifre kontrolü
+    if (formData.password !== formData.passwordConfirmation) {
+      setError('Şifreler eşleşmiyor.');
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.classYear) {
-      setError('Lütfen sınıfınızı seçin.');
+    
+    if (!validateForm()) {
       return;
     }
 
     try {
+      const requestData = {
+        name: formData.firstName,
+        surname: formData.lastName,
+        student_number: formData.studentNumber,
+        phone: formData.phone,
+        email: formData.email,
+        faculty: formData.faculty,
+        department: formData.department,
+        class: parseInt(formData.classYear),
+        birth_date: formData.birthDate,
+        password: formData.password,
+        password_confirmation: formData.passwordConfirmation
+      };
+
       const response = await fetch('http://127.0.0.1:8000/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestData),
       });
 
       const data = await response.json();
-      console.log(response);
+
       if (!response.ok) {
         throw new Error(data.message || 'Kayıt işlemi başarısız oldu');
       }
 
-      // Başarılı kayıt sonrası ana sayfaya yönlendir
       router.push('/');
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Bir hata oluştu');
@@ -166,6 +223,16 @@ export default function RegisterPage() {
             name="password"
             placeholder="Şifre"
             value={formData.password}
+            onChange={handleChange}
+            required
+            className="input-style"
+          />
+
+          <input
+            type="password"
+            name="passwordConfirmation"
+            placeholder="Şifre Tekrar"
+            value={formData.passwordConfirmation}
             onChange={handleChange}
             required
             className="input-style"

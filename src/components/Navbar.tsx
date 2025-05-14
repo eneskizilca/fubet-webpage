@@ -201,6 +201,9 @@ export default function Navbar() {
               </div>
             </div>
 
+            {/* Bize Ulaşın */}
+            <Link href="/contact" className="text-gray-700 hover:text-[#78123e] font-medium">Bize Ulaşın</Link>
+
             {/* Auth */}
             {isAuthenticated ? (
               <>
@@ -251,32 +254,36 @@ export default function Navbar() {
               <Link href="/events/past" className="block text-sm text-gray-600">Geçmiş Etkinlikler</Link>
             </div>
           </div>
+          <button 
+            onClick={() => setShowSuggestModal(true)}
+            className="block text-gray-700 w-full text-left flex items-center gap-2"
+          >
+            Etkinlik Öner
+            <Image
+              src="/ai2.png"
+              alt="AI Icon"
+              width={20}
+              height={20}
+              className="inline-block"
+            />
+          </button>
           <div>
-            <p className="font-medium text-gray-700">Hakkımızda</p>
+            <Link href="/about" className="block text-gray-700">Hakkımızda</Link>
             <div className="ml-4 space-y-1">
-              <Link href="/about/biz-kimiz" className="block text-sm text-gray-600">Biz Kimiz?</Link>
-              <Link href="/about/ekibimiz" className="block text-sm text-gray-600">Ekibimiz</Link>
+              <Link href="/about/about-us" className="block text-sm text-gray-600">Biz Kimiz?</Link>
+              <Link href="/about/team" className="block text-sm text-gray-600">Ekibimiz</Link>
             </div>
           </div>
+          <Link href="/contact" className="block text-gray-700">Bize Ulaşın</Link>
           {isAuthenticated ? (
             <>
               <Link href="/profile" className="block text-gray-700">Profil</Link>
-              <button className="block w-full text-center bg-[#78123e] text-white px-6 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105">Çıkış Yap</button>
+              <button className="block w-full text-left text-gray-700">Çıkış Yap</button>
             </>
           ) : (
-            <div className="flex gap-2">
-              <Link 
-                href="/login" 
-                className="block bg-[#78123e] text-white px-6 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 font-medium text-center"
-              >
-                Giriş Yap
-              </Link>
-              <Link 
-                href="/register" 
-                className="block bg-[#78123e] text-white px-6 py-2 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 font-medium text-center"
-              >
-                Kayıt Ol
-              </Link>
+            <div className="space-y-2 pt-2">
+              <Link href="/login" className="block w-full bg-[#78123e] text-white px-4 py-2 rounded-lg text-center">Giriş Yap</Link>
+              <Link href="/register" className="block w-full bg-[#78123e] text-white px-4 py-2 rounded-lg text-center">Kayıt Ol</Link>
             </div>
           )}
         </div>

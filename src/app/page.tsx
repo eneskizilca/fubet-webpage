@@ -25,7 +25,7 @@ export default function Home() {
               Fırat Üniversitesi Bilişim ve Eğitim Topluluğu
             </h1>
             <p className="text-lg md:text-2xl text-white/90 mb-8 font-medium animate-fade-in-down" style={{ animationDelay: '0.7s', animationFillMode: 'both' }}>
-              Geleceği birlikte kodluyoruz!
+              Geleceğe eğitiyor, eğlenerek ilerliyoruz!
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-down" style={{ animationDelay: '1s', animationFillMode: 'both' }}>
               <Link href="/register" className="px-8 py-3 rounded-xl bg-white text-center text-[#78123e] font-bold text-lg shadow-md hover:scale-105 transition-transform duration-200 flex flex-col items-center justify-center">

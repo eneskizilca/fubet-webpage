@@ -47,3 +47,14 @@ body {
 .animate-fade-in-down {
   animation: fade-in-down 0.7s cubic-bezier(0.4,0,0.2,1) both;
 }
+
+/* Next.js göstergelerini tamamen gizle */
+[data-nextjs-attribution], 
+[data-nextjs-attribution] *, 
+#__next-build-watcher,
+.nextjs-build-watcher {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

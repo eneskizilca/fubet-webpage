@@ -20,6 +20,7 @@ export default function RegisterPage() {
   });
 
   const [error, setError] = useState('');
+  const [isDateFocused, setIsDateFocused] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -209,14 +210,24 @@ export default function RegisterPage() {
             <option value="Yüksek Lisans">Yüksek Lisans</option>
           </select>
 
-          <input
-            type="date"
-            name="birthDate"
-            value={formData.birthDate}
-            onChange={handleChange}
-            required
-            className="input-style"
-          />
+          <div className="relative">
+            <input
+              type="date"
+              name="birthDate"
+              value={formData.birthDate}
+              onChange={handleChange}
+              onFocus={() => setIsDateFocused(true)}
+              onBlur={() => setIsDateFocused(false)}
+              required
+              className="input-style"
+            />
+            {isDateFocused && (
+              <div className="absolute right-[-180px] top-0 bg-white p-3 rounded-lg shadow-md text-sm text-[#172c5c] animate-fade-in z-20 transform transition-transform whitespace-nowrap">
+                <div className="absolute left-[-8px] top-[10px] w-0 h-0 border-t-[8px] border-t-transparent border-r-[8px] border-r-white border-b-[8px] border-b-transparent"></div>
+                Doğum tarihinizi giriniz.
+              </div>
+            )}
+          </div>
 
           <input
             type="password"
@@ -281,12 +292,25 @@ export default function RegisterPage() {
           }
         }
 
+        @keyframes fade-in {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+
         .animate-slide-in-left {
           animation: slide-in-left 0.8s ease-out forwards;
         }
 
         .animate-fade-in-down {
           animation: fade-in-down 0.8s ease-out forwards;
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out forwards;
         }
 
         .input-style {

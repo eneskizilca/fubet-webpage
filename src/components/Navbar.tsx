@@ -1,11 +1,9 @@
 'use client';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useRef, createContext, useContext } from 'react';
+import { useState, useRef, createContext, useContext, useEffect } from 'react';
 import { useSuggestEventHover } from '../context/SuggestEventHoverContext';
 import { useRouter } from 'next/navigation';
-
-const isAuthenticated = false;
 
 export const SuggestEventHoverContext = createContext({
   isSuggestEventHovered: false,
@@ -20,7 +18,68 @@ export default function Navbar() {
   const spotlightTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const { isSuggestEventHovered, setIsSuggestEventHovered } = useSuggestEventHover();
   const [showSuggestModal, setShowSuggestModal] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem('token');
+      const user = localStorage.getItem('user');
+      setIsAuthenticated(!!token && !!user);
+    };
+    
+    checkAuth();
+    
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+  
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+  
+  const confirmLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    setShowLogoutConfirm(false);
+    router.push('/');
+  };
+  
+  const cancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setIsAuthenticated(false);
+    router.push('/');
+  };
+
+  const getUserInitials = () => {
+    try {
+      const userStr = localStorage.getItem('user');
+      if (!userStr) return 'KK';
+      
+      const user = JSON.parse(userStr);
+      const firstInitial = user.name ? user.name.charAt(0).toUpperCase() : '';
+      const lastInitial = user.surname ? user.surname.charAt(0).toUpperCase() : '';
+      
+      return firstInitial + lastInitial;
+    } catch (error) {
+      console.error('Error getting user initials:', error);
+      return 'KK';
+    }
+  };
 
   const handleDropdownClick = (dropdownName: string) => {
     if (activeDropdown === dropdownName) {
@@ -206,10 +265,26 @@ export default function Navbar() {
 
             {/* Auth */}
             {isAuthenticated ? (
-              <>
-                <Link href="/profile" className="text-gray-700 hover:text-[#78123e] font-medium">Profil</Link>
-                <button className="bg-[#78123e] text-white px-6 py-1.5 rounded-xl transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105">Çıkış Yap</button>
-              </>
+              <div className="flex items-center gap-3">
+                <Link 
+                  href="/profile" 
+                  className="bg-[#78123e] hover:bg-[#5a0e2c] text-white pl-2 pr-2 py-1.5 rounded-full transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 font-medium flex items-center"
+                >
+                  <div className="w-7 h-7 rounded-full bg-white text-[#78123e] flex items-center justify-center font-bold text-sm">
+                    {getUserInitials()}
+                  </div>
+                  <span className="ml-2">Profilim</span>
+                </Link>
+                <button 
+                  onClick={handleLogoutClick}
+                  className="bg-[#78123e] hover:bg-[#5a0e2c] text-white w-9 h-9 rounded-full transition-all duration-300 shadow-sm hover:shadow-md hover:scale-105 cursor-pointer flex items-center justify-center"
+                  aria-label="Çıkış Yap"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                </button>
+              </div>
             ) : (
               <div className="flex gap-2">
                 <Link 
@@ -276,10 +351,26 @@ export default function Navbar() {
           </div>
           <Link href="/contact" className="block text-gray-700">Bize Ulaşın</Link>
           {isAuthenticated ? (
-            <>
-              <Link href="/profile" className="block text-gray-700">Profil</Link>
-              <button className="block w-full text-left text-gray-700">Çıkış Yap</button>
-            </>
+            <div className="space-y-2 pt-2">
+              <Link 
+                href="/profile" 
+                className="flex items-center bg-[#78123e] text-white pl-1.5 pr-1.5 py-2 rounded-full"
+              >
+                <div className="w-7 h-7 rounded-full bg-white text-[#78123e] flex items-center justify-center font-bold text-sm">
+                  {getUserInitials()}
+                </div>
+                <span className="ml-2">Profilim</span>
+              </Link>
+              <button 
+                onClick={handleLogoutClick}
+                className="flex items-center gap-2 w-full bg-gray-200 text-gray-700 px-3 py-2 rounded-lg"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span>Çıkış Yap</span>
+              </button>
+            </div>
           ) : (
             <div className="space-y-2 pt-2">
               <Link href="/login" className="block w-full bg-[#78123e] text-white px-4 py-2 rounded-lg text-center">Giriş Yap</Link>
@@ -347,6 +438,33 @@ export default function Navbar() {
           opacity: 0;
         }
       `}</style>
+
+      {/* Çıkış Onayı Popup */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in">
+          <div 
+            className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4 transform transition-all"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold text-[#172c5c] mb-4 text-center">Çıkış Yapmak İstiyor musunuz?</h3>
+            
+            <div className="flex flex-col gap-3 mt-6">
+              <button
+                onClick={confirmLogout}
+                className="w-full py-2.5 rounded-xl bg-[#78123e] text-white font-bold hover:bg-[#5a0e2c] transition-colors"
+              >
+                Çıkış Yap
+              </button>
+              <button
+                onClick={cancelLogout}
+                className="w-full py-2.5 rounded-xl bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition-colors"
+              >
+                İptal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 } 

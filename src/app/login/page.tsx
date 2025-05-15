@@ -9,14 +9,51 @@ export default function LoginPage() {
     email: '',
     password: '',
   });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/home');
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Giriş yapılırken bir hata oluştu');
+      }
+
+      // Kullanıcı bilgisi ve token'ı localStorage'a kaydet
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      // Başarılı giriş sonrası ana sayfaya yönlendir
+      router.push('/');
+      
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Giriş yapılırken bir hata oluştu');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,8 +103,16 @@ export default function LoginPage() {
             className="input-style"
           />
 
-          <button type="submit" className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg cursor-pointer">
-            Giriş Yap
+          {error && (
+            <p className="text-red-600 text-sm text-center">{error}</p>
+          )}
+
+          <button 
+            type="submit" 
+            className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg cursor-pointer disabled:opacity-70"
+            disabled={loading}
+          >
+            {loading ? 'Giriş Yapılıyor...' : 'Giriş Yap'}
           </button>
         </form>
 
@@ -130,8 +175,6 @@ export default function LoginPage() {
           box-shadow: 0 0 0 2px #78123e40;
         }
       `}</style>
-
-
     </div>
   );
 }

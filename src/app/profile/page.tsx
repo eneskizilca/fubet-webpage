@@ -3,33 +3,94 @@ import { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { Mail, MapPin, Phone, Calendar, Edit, Save, X } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
-// Mock user data (this would normally come from an API)
-const mockUser = {
-  id: 1,
-  name: 'Ahmet',
-  surname: 'Yılmaz',
-  student_number: '123456789',
-  phone: '05501234567',
-  email: 'ahmet.yilmaz@firat.edu.tr',
-  faculty: 'Mühendislik Fakültesi',
-  department: 'Bilgisayar Mühendisliği',
-  class: 2,
-  birth_date: '2002-06-15',
+// Default user data structure and type
+interface UserData {
+  id?: string;
+  _id?: string;  // MongoDB genellikle _id kullanır
+  name: string;
+  surname: string;
+  student_number: string;
+  phone: string;
+  email: string;
+  faculty: string;
+  department: string;
+  class: number;
+  birth_date: string;
+  avatar: string;
+  joinDate: string;
+}
+
+const defaultUser: UserData = {
+  name: '',
+  surname: '',
+  student_number: '',
+  phone: '',
+  email: '',
+  faculty: '',
+  department: '',
+  class: 1,
+  birth_date: '',
   avatar: '/user-neutral.png',
-  joinDate: '15 Eylül 2022'
+  joinDate: ''
 };
 
 export default function ProfilePage() {
-  const [user, setUser] = useState(mockUser);
+  const router = useRouter();
+  const [user, setUser] = useState<UserData>(defaultUser);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(mockUser);
+  const [formData, setFormData] = useState<UserData>(defaultUser);
   const [animateProfile, setAnimateProfile] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+  const [updateError, setUpdateError] = useState("");
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   useEffect(() => {
-    // Trigger animations after component mounts
-    setAnimateProfile(true);
-  }, []);
+    // Check authentication and get user data from localStorage
+    const token = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
+    
+    if (!token || !storedUser) {
+      // Redirect to login if not authenticated
+      router.push('/login');
+      return;
+    }
+
+    try {
+      const parsedUser = JSON.parse(storedUser) as any; // API'den gelen veriyi önce any olarak işleyelim
+      
+      // Format join date from created_at
+      const joinDate = parsedUser.created_at ? 
+        new Date(parsedUser.created_at).toLocaleDateString('tr-TR', { 
+          day: 'numeric', 
+          month: 'long', 
+          year: 'numeric' 
+        }) : '';
+      
+      const userData: UserData = {
+        ...parsedUser,
+        // MongoDB'den gelen _id'yi id olarak da saklayalım
+        id: parsedUser.id || parsedUser._id,
+        avatar: '/user-neutral.png', // Default avatar
+        joinDate
+      };
+      
+      setUser(userData);
+      setFormData(userData);
+      setIsLoading(false);
+      
+      // Trigger animations after data is loaded
+      setTimeout(() => {
+        setAnimateProfile(true);
+      }, 100);
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      router.push('/login');
+    }
+  }, [router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,10 +100,73 @@ export default function ProfilePage() {
     });
   };
 
-  const handleSave = () => {
-    // In a real application, you would send this data to your API
-    setUser(formData);
-    setIsEditing(false);
+  const handleSave = async () => {
+    setUpdateLoading(true);
+    setUpdateError("");
+    setUpdateSuccess(false);
+    
+    try {
+      const token = localStorage.getItem('token');
+      
+      if (!token) {
+        throw new Error("Oturum süresi dolmuş. Lütfen tekrar giriş yapın.");
+      }
+      
+      // MongoDB ID'sini al (user.id)
+      const userId = user.id;
+      console.log("Update edilecek ID:", userId);
+      
+      // API'ye istek gönder
+      const response = await fetch(`http://127.0.0.1:8000/api/panel/users/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          surname: formData.surname,
+          phone: formData.phone,
+          faculty: formData.faculty,
+          department: formData.department,
+          class: parseInt(formData.class.toString()),
+          birth_date: formData.birth_date,
+          student_number: formData.student_number
+        })
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Güncelleme işlemi başarısız oldu');
+      }
+      
+      const data = await response.json();
+      console.log("Update başarılı:", data);
+      
+      // State ve localStorage güncelle
+      setUser({
+        ...user,
+        ...data
+      });
+      
+      localStorage.setItem('user', JSON.stringify({
+        ...JSON.parse(localStorage.getItem('user') || '{}'),
+        ...data
+      }));
+      
+      setUpdateSuccess(true);
+      
+      setTimeout(() => {
+        setUpdateSuccess(false);
+        setIsEditing(false);
+      }, 2000);
+      
+    } catch (error) {
+      console.error('Güncelleme hatası:', error);
+      setUpdateError(error instanceof Error ? error.message : 'Güncelleme sırasında bir hata oluştu');
+    } finally {
+      setUpdateLoading(false);
+    }
   };
 
   const handleCancel = () => {
@@ -50,11 +174,45 @@ export default function ProfilePage() {
     setIsEditing(false);
   };
 
+  const handleLogoutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+  
+  const confirmLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setShowLogoutConfirm(false);
+    router.push('/');
+  };
+  
+  const cancelLogout = () => {
+    setShowLogoutConfirm(false);
+  };
+
+  const handleLogout = () => {
+    // Remove token and user data from localStorage
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    router.push('/');
+  };
+
   // Format birth date for display
   const formatBirthDate = (dateString: string) => {
+    if (!dateString) return '';
     const date = new Date(dateString);
     return date.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-grow bg-gradient-to-br from-[#172c5c] to-[#78123e] flex items-center justify-center">
+          <div className="text-white text-xl">Yükleniyor...</div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -87,29 +245,64 @@ export default function ProfilePage() {
               </div>
               <div className={`transition-all duration-700 delay-500 transform ${animateProfile ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
                 {!isEditing ? (
-                  <button 
-                    onClick={() => setIsEditing(true)}
-                    className="bg-[#78123e] text-white px-4 py-2 rounded-lg hover:bg-[#5a0e2c] transition-colors flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
-                  >
-                    <Edit size={18} />
-                    Profili Düzenle
-                  </button>
-                ) : (
-                  <div className="flex gap-2">
+                  <div className="flex flex-col space-y-2">
                     <button 
-                      onClick={handleSave}
-                      className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
+                      onClick={() => setIsEditing(true)}
+                      className="bg-[#78123e] text-white px-4 py-2 rounded-lg hover:bg-[#5a0e2c] transition-colors flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
                     >
-                      <Save size={18} />
-                      Kaydet
+                      <Edit size={18} />
+                      Profili Düzenle
                     </button>
                     <button 
-                      onClick={handleCancel}
+                      onClick={handleLogoutClick}
                       className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300"
                     >
-                      <X size={18} />
-                      İptal
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      </svg>
+                      Çıkış Yap
                     </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col">
+                    <div className="flex gap-2">
+                      <button 
+                        onClick={handleSave}
+                        disabled={updateLoading}
+                        className={`text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300 ${
+                          updateSuccess 
+                            ? "bg-green-500" 
+                            : updateLoading 
+                              ? "bg-blue-400 cursor-not-allowed" 
+                              : "bg-green-600 hover:bg-green-700"
+                        }`}
+                      >
+                        {updateLoading ? (
+                          <div className="animate-spin h-4 w-4 border-2 border-white rounded-full border-t-transparent" />
+                        ) : updateSuccess ? (
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                          </svg>
+                        ) : (
+                          <Save size={18} />
+                        )}
+                        {updateLoading ? "Kaydediliyor..." : updateSuccess ? "Kaydedildi!" : "Kaydet"}
+                      </button>
+                      <button 
+                        onClick={handleCancel}
+                        disabled={updateLoading}
+                        className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-2 cursor-pointer hover:scale-105 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <X size={18} />
+                        İptal
+                      </button>
+                    </div>
+                    
+                    {updateError && (
+                      <p className="text-red-600 text-sm mt-2">
+                        {updateError}
+                      </p>
+                    )}
                   </div>
                 )}
               </div>
@@ -117,6 +310,13 @@ export default function ProfilePage() {
             
             {/* Profile Content */}
             <div className="p-6">
+              {updateError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6 relative" role="alert">
+                  <strong className="font-bold">Hata! </strong>
+                  <span className="block sm:inline">{updateError}</span>
+                </div>
+              )}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Personal Information */}
                 <div className={`bg-gray-50 p-6 rounded-xl transition-all duration-700 delay-600 transform ${animateProfile ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
@@ -322,14 +522,14 @@ export default function ProfilePage() {
                             onChange={(e) => setFormData({...formData, class: parseInt(e.target.value)})}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#78123e] focus:border-transparent"
                           >
-                            <option value={1}>Hazırlık</option>
-                            <option value={2}>1. Sınıf</option>
-                            <option value={3}>2. Sınıf</option>
-                            <option value={4}>3. Sınıf</option>
-                            <option value={5}>4. Sınıf</option>
-                            <option value={6}>5. Sınıf</option>
-                            <option value={7}>6. Sınıf</option>
-                            <option value={8}>Yüksek Lisans</option>
+                            <option value={0}>Hazırlık</option>
+                            <option value={1}>1. Sınıf</option>
+                            <option value={2}>2. Sınıf</option>
+                            <option value={3}>3. Sınıf</option>
+                            <option value={4}>4. Sınıf</option>
+                            <option value={5}>5. Sınıf</option>
+                            <option value={6}>6. Sınıf</option>
+                            <option value={99}>Yüksek Lisans</option>
                           </select>
                         </div>
                         
@@ -346,7 +546,9 @@ export default function ProfilePage() {
                             value={formData.student_number} 
                             onChange={handleInputChange}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#78123e] focus:border-transparent"
+                            placeholder="Öğrenci numaranızı giriniz"
                           />
+                          <p className="text-xs text-gray-500 mt-1">Öğrenci numarası yazınız. Numaranızı değiştirirseniz kayıt etmeden önce şifreniz size tekrar sorulacaktır.</p>
                         </div>
                       </>
                     )}
@@ -419,7 +621,49 @@ export default function ProfilePage() {
             transform: scale(1);
           }
         }
+
+        @keyframes fade-in {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.5s ease-out forwards;
+        }
       `}</style>
+
+      {/* Çıkış Onayı Popup */}
+      {showLogoutConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in">
+          <div 
+            className="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4 transform transition-all"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 className="text-xl font-bold text-[#172c5c] mb-4 text-center">Çıkış Yapmak İstiyor musunuz?</h3>
+            
+            <div className="flex flex-col gap-3 mt-6">
+              <button
+                onClick={confirmLogout}
+                className="w-full py-2.5 rounded-xl bg-[#78123e] text-white font-bold hover:bg-[#5a0e2c] transition-colors"
+              >
+                Çıkış Yap
+              </button>
+              <button
+                onClick={cancelLogout}
+                className="w-full py-2.5 rounded-xl bg-gray-200 text-gray-700 font-bold hover:bg-gray-300 transition-colors"
+              >
+                İptal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 } 

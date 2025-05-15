@@ -21,10 +21,14 @@ import {
   MoreHorizontal,
   Mail,
   Phone,
-  Flag
+  Flag,
+  Check,
+  X,
+  ShieldCheck,
+  UserCog
 } from 'lucide-react';
 
-export default function Dashboard() {
+export default function AdvisorDashboard() {
   const [activePage, setActivePage] = useState('İstatistikler');
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -56,7 +60,10 @@ export default function Dashboard() {
               height={32} 
               className={`mr-2 ${!sidebarOpen && 'hidden'}`} 
             />
-            <h1 className={`font-bold text-xl ${!sidebarOpen && 'hidden'}`}>FÜBET</h1>
+            <div className={`${!sidebarOpen && 'hidden'}`}>
+              <h1 className="font-bold text-xl">FÜBET</h1>
+              <span className="text-xs text-yellow-300">Danışman Paneli</span>
+            </div>
           </div>
           <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1 rounded-full hover:bg-gray-700 cursor-pointer">
             <Menu className="w-6 h-6" />
@@ -84,7 +91,7 @@ export default function Dashboard() {
         <div className="absolute bottom-0 w-full border-t border-gray-700">
           <Link href="/" className="flex items-center p-4 hover:bg-gray-700 transition-colors cursor-pointer">
             <LogOut className="w-5 h-5" />
-            <span className={`ml-4 ${!sidebarOpen && 'hidden'}`}>Çıkış Yap</span>
+            <span className={`ml-4 ${!sidebarOpen && 'hidden'}`}>Çıkış Yap (Siteye Dön)</span>
           </Link>
         </div>
       </div>
@@ -93,11 +100,14 @@ export default function Dashboard() {
       <div className={`flex-1 transition-all duration-300 ease-in-out ${sidebarOpen ? 'ml-64' : 'ml-20'} bg-gray-100 flex flex-col h-screen`}>
         <header className="bg-white shadow-md sticky top-0 z-10">
           <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-            <h2 className="text-2xl font-bold text-gray-800">{activePage}</h2>
+            <div className="flex items-center">
+              <h2 className="text-2xl font-bold text-gray-800">{activePage}</h2>
+              <span className="ml-3 px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-medium">Danışman Yetkisi</span>
+            </div>
             <div className="flex items-center space-x-4">
               <div className="relative">
-                <div className="w-10 h-10 rounded-full bg-[#78123e] text-white flex items-center justify-center">
-                  <span className="font-medium">YA</span>
+                <div className="w-10 h-10 rounded-full bg-[#172c5c] text-white flex items-center justify-center">
+                  <span className="font-medium">MB</span>
                 </div>
                 <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
@@ -344,42 +354,43 @@ export default function Dashboard() {
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-posta</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Bölüm</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Üyelik Tarihi</th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {[
-                        { name: 'Ahmet Yılmaz', email: 'ahmet.yilmaz@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', joinDate: '12 Mart 2023' },
-                        { name: 'Ayşe Demir', email: 'ayse.demir@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', joinDate: '5 Nisan 2023' },
-                        { name: 'Mehmet Kaya', email: 'mehmet.kaya@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Pasif', joinDate: '23 Mayıs 2023' },
-                        { name: 'Zeynep Çelik', email: 'zeynep.celik@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', joinDate: '10 Haziran 2023' },
-                        { name: 'Emre Şahin', email: 'emre.sahin@firat.edu.tr', department: 'Endüstri Mühendisliği', status: 'Aktif', joinDate: '18 Eylül 2023' },
-                        { name: 'Deniz Arslan', email: 'deniz.arslan@firat.edu.tr', department: 'Makine Mühendisliği', status: 'Pasif', joinDate: '7 Ekim 2023' },
-                        { name: 'Elif Yıldız', email: 'elif.yildiz@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', joinDate: '15 Ekim 2023' },
-                        { name: 'Can Öztürk', email: 'can.ozturk@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', joinDate: '22 Ekim 2023' },
-                        { name: 'Selin Aydın', email: 'selin.aydin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', joinDate: '3 Kasım 2023' },
-                        { name: 'Burak Koç', email: 'burak.koc@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Pasif', joinDate: '12 Kasım 2023' },
-                        { name: 'İrem Aksoy', email: 'irem.aksoy@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', joinDate: '25 Kasım 2023' },
-                        { name: 'Onur Yılmaz', email: 'onur.yilmaz@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', joinDate: '4 Aralık 2023' },
-                        { name: 'Gizem Kaya', email: 'gizem.kaya@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', joinDate: '15 Aralık 2023' },
-                        { name: 'Mert Demir', email: 'mert.demir@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Pasif', joinDate: '22 Aralık 2023' },
-                        { name: 'Ceren Şahin', email: 'ceren.sahin@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', joinDate: '10 Ocak 2024' },
-                        { name: 'Kaan Yıldırım', email: 'kaan.yildirim@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', joinDate: '18 Ocak 2024' },
-                        { name: 'Ece Çelik', email: 'ece.celik@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', joinDate: '27 Ocak 2024' },
-                        { name: 'Berk Aydın', email: 'berk.aydin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', joinDate: '5 Şubat 2024' },
-                        { name: 'Sude Kaya', email: 'sude.kaya@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Pasif', joinDate: '14 Şubat 2024' },
-                        { name: 'Arda Özkan', email: 'arda.ozkan@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', joinDate: '23 Şubat 2024' },
-                        { name: 'Yağmur Demir', email: 'yagmur.demir@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', joinDate: '3 Mart 2024' },
-                        { name: 'Emir Şahin', email: 'emir.sahin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', joinDate: '12 Mart 2024' },
-                        { name: 'Zehra Yıldız', email: 'zehra.yildiz@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', joinDate: '21 Mart 2024' },
-                        { name: 'Efe Kaya', email: 'efe.kaya@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Pasif', joinDate: '30 Mart 2024' },
-                        { name: 'Naz Çetin', email: 'naz.cetin@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', joinDate: '8 Nisan 2024' },
-                        { name: 'Umut Aksoy', email: 'umut.aksoy@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', joinDate: '17 Nisan 2024' },
-                        { name: 'Defne Yılmaz', email: 'defne.yilmaz@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', joinDate: '26 Nisan 2024' },
-                        { name: 'Alp Kaya', email: 'alp.kaya@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', joinDate: '5 Mayıs 2024' },
-                        { name: 'Duru Demir', email: 'duru.demir@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Pasif', joinDate: '14 Mayıs 2024' },
-                        { name: 'Kerem Şahin', email: 'kerem.sahin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', joinDate: '23 Mayıs 2024' }
+                        { name: 'Ahmet Yılmaz', email: 'ahmet.yilmaz@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '12 Mart 2023' },
+                        { name: 'Ayşe Demir', email: 'ayse.demir@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', role: 'Yönetici', joinDate: '5 Nisan 2023' },
+                        { name: 'Mehmet Kaya', email: 'mehmet.kaya@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '23 Mayıs 2023' },
+                        { name: 'Zeynep Çelik', email: 'zeynep.celik@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', role: 'Yönetici', joinDate: '10 Haziran 2023' },
+                        { name: 'Emre Şahin', email: 'emre.sahin@firat.edu.tr', department: 'Endüstri Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '18 Eylül 2023' },
+                        { name: 'Deniz Arslan', email: 'deniz.arslan@firat.edu.tr', department: 'Makine Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '7 Ekim 2023' },
+                        { name: 'Elif Yıldız', email: 'elif.yildiz@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '15 Ekim 2023' },
+                        { name: 'Can Öztürk', email: 'can.ozturk@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '22 Ekim 2023' },
+                        { name: 'Selin Aydın', email: 'selin.aydin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '3 Kasım 2023' },
+                        { name: 'Burak Koç', email: 'burak.koc@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '12 Kasım 2023' },
+                        { name: 'İrem Aksoy', email: 'irem.aksoy@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '25 Kasım 2023' },
+                        { name: 'Onur Yılmaz', email: 'onur.yilmaz@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '4 Aralık 2023' },
+                        { name: 'Gizem Kaya', email: 'gizem.kaya@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '15 Aralık 2023' },
+                        { name: 'Mert Demir', email: 'mert.demir@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '22 Aralık 2023' },
+                        { name: 'Ceren Şahin', email: 'ceren.sahin@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '10 Ocak 2024' },
+                        { name: 'Kaan Yıldırım', email: 'kaan.yildirim@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '18 Ocak 2024' },
+                        { name: 'Ece Çelik', email: 'ece.celik@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '27 Ocak 2024' },
+                        { name: 'Berk Aydın', email: 'berk.aydin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '5 Şubat 2024' },
+                        { name: 'Sude Kaya', email: 'sude.kaya@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '14 Şubat 2024' },
+                        { name: 'Arda Özkan', email: 'arda.ozkan@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '23 Şubat 2024' },
+                        { name: 'Yağmur Demir', email: 'yagmur.demir@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '3 Mart 2024' },
+                        { name: 'Emir Şahin', email: 'emir.sahin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '12 Mart 2024' },
+                        { name: 'Zehra Yıldız', email: 'zehra.yildiz@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '21 Mart 2024' },
+                        { name: 'Efe Kaya', email: 'efe.kaya@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '30 Mart 2024' },
+                        { name: 'Naz Çetin', email: 'naz.cetin@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '8 Nisan 2024' },
+                        { name: 'Umut Aksoy', email: 'umut.aksoy@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '17 Nisan 2024' },
+                        { name: 'Defne Yılmaz', email: 'defne.yilmaz@firat.edu.tr', department: 'Yazılım Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '26 Nisan 2024' },
+                        { name: 'Alp Kaya', email: 'alp.kaya@firat.edu.tr', department: 'Bilgisayar Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '5 Mayıs 2024' },
+                        { name: 'Duru Demir', email: 'duru.demir@firat.edu.tr', department: 'Adli Bilişim Mühendisliği', status: 'Pasif', role: 'Üye', joinDate: '14 Mayıs 2024' },
+                        { name: 'Kerem Şahin', email: 'kerem.sahin@firat.edu.tr', department: 'Elektrik-Elektronik Mühendisliği', status: 'Aktif', role: 'Üye', joinDate: '23 Mayıs 2024' }
                       ].map((user, idx) => (
                         <tr key={idx} className="hover:bg-gray-50">
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -400,6 +411,15 @@ export default function Dashboard() {
                             }`}>
                               {user.status}
                             </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <select 
+                              className="text-sm border rounded-md px-2 py-1 cursor-pointer"
+                              defaultValue={user.role}
+                            >
+                              <option>Üye</option>
+                              <option>Yönetici</option>
+                            </select>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {user.joinDate}
@@ -455,6 +475,105 @@ export default function Dashboard() {
                       </div>
                     </div>
                   </div>
+                </div>
+              </div>
+            )}
+
+            {activePage === 'Bütçe İşlemleri' && (
+              <div className="bg-white rounded-lg shadow p-6">
+                <h3 className="text-lg font-semibold mb-6">Bütçe Yönetimi</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
+                    <h4 className="text-sm text-blue-700 mb-2">Mevcut Bakiye</h4>
+                    <p className="text-2xl font-bold text-blue-800">₺12,650</p>
+                    <p className="text-xs text-blue-600 mt-2">Son güncelleme: 12 Nis 2024</p>
+                  </div>
+                  
+                  <div className="bg-green-50 p-4 rounded-lg border border-green-100">
+                    <h4 className="text-sm text-green-700 mb-2">Toplam Gelir</h4>
+                    <p className="text-2xl font-bold text-green-800">₺25,000</p>
+                    <p className="text-xs text-green-600 mt-2">2024 Yılı</p>
+                  </div>
+                  
+                  <div className="bg-red-50 p-4 rounded-lg border border-red-100">
+                    <h4 className="text-sm text-red-700 mb-2">Toplam Gider</h4>
+                    <p className="text-2xl font-bold text-red-800">₺12,350</p>
+                    <p className="text-xs text-red-600 mt-2">2024 Yılı</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <h4 className="text-md font-medium">Hesap Hareketleri</h4>
+                    <div className="flex space-x-2">
+                      <select className="text-sm border rounded-md px-2 py-1 cursor-pointer">
+                        <option>Tüm İşlemler</option>
+                        <option>Gelirler</option>
+                        <option>Giderler</option>
+                        <option>Onay Bekleyenler</option>
+                      </select>
+                      <button className="bg-[#78123e] text-white px-3 py-1 rounded-md hover:bg-[#5a0e2c] transition-colors text-sm cursor-pointer">
+                        Yeni İşlem
+                      </button>
+                    </div>
+                  </div>
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Açıklama</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Miktar</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {[
+                        { desc: 'C Firması Sponsorluk', date: '18 Nis 2024', amount: '+₺4,500', status: 'Onay Bekliyor', type: 'gelir' },
+                        { desc: 'Seminer Ekipmanları', date: '17 Nis 2024', amount: '-₺2,800', status: 'Onay Bekliyor', type: 'gider' },
+                        { desc: 'A Holding Sponsorluk', date: '15 Nis 2024', amount: '+₺5,000', status: 'Onaylandı', type: 'gelir' },
+                        { desc: 'Workshop Malzemeleri', date: '10 Nis 2024', amount: '-₺1,250', status: 'Onaylandı', type: 'gider' },
+                        { desc: 'B Firması Sponsorluk', date: '8 Nis 2024', amount: '+₺3,000', status: 'Onaylandı', type: 'gelir' },
+                        { desc: 'Konuşmacı Ödemesi', date: '5 Nis 2024', amount: '-₺2,500', status: 'Onaylandı', type: 'gider' },
+                        { desc: 'Fakülte Destek Fonu', date: '1 Nis 2024', amount: '+₺2,500', status: 'Onaylandı', type: 'gelir' },
+                      ].map((item, idx) => (
+                        <tr key={idx} className={item.type === 'gelir' ? 'bg-green-50' : ''}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.desc}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.date}</td>
+                          <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${item.type === 'gelir' ? 'text-green-600' : 'text-red-600'}`}>
+                            {item.amount}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                              item.status === 'Onaylandı' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {item.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {item.status === 'Onay Bekliyor' ? (
+                              <div className="flex space-x-2">
+                                <button className="flex items-center text-green-600 hover:text-green-900 text-sm cursor-pointer">
+                                  <Check className="w-4 h-4 mr-1" />
+                                  <span>Onayla</span>
+                                </button>
+                                <button className="flex items-center text-red-600 hover:text-red-900 text-sm cursor-pointer">
+                                  <X className="w-4 h-4 mr-1" />
+                                  <span>Reddet</span>
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center text-gray-500">
+                                <ShieldCheck className="w-4 h-4 mr-1" />
+                                <span className="text-sm">Onaylandı</span>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
@@ -777,82 +896,6 @@ export default function Dashboard() {
                       </div>
                     </div>
                   ))}
-                </div>
-              </div>
-            )}
-
-            {activePage === 'Bütçe İşlemleri' && (
-              <div className="bg-white rounded-lg shadow p-6">
-                <h3 className="text-lg font-semibold mb-6">Bütçe Yönetimi</h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                    <h4 className="text-sm text-blue-700 mb-2">Mevcut Bakiye</h4>
-                    <p className="text-2xl font-bold text-blue-800">₺12,650</p>
-                    <p className="text-xs text-blue-600 mt-2">Son güncelleme: 12 Nis 2024</p>
-                  </div>
-                  
-                  <div className="bg-green-50 p-4 rounded-lg border border-green-100">
-                    <h4 className="text-sm text-green-700 mb-2">Toplam Gelir</h4>
-                    <p className="text-2xl font-bold text-green-800">₺25,000</p>
-                    <p className="text-xs text-green-600 mt-2">2024 Yılı</p>
-                  </div>
-                  
-                  <div className="bg-red-50 p-4 rounded-lg border border-red-100">
-                    <h4 className="text-sm text-red-700 mb-2">Toplam Gider</h4>
-                    <p className="text-2xl font-bold text-red-800">₺12,350</p>
-                    <p className="text-xs text-red-600 mt-2">2024 Yılı</p>
-                  </div>
-                </div>
-                
-                <div className="mt-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="text-md font-medium">Hesap Hareketleri</h4>
-                    <div className="flex space-x-2">
-                      <select className="text-sm border rounded-md px-2 py-1 cursor-pointer">
-                        <option>Tüm İşlemler</option>
-                        <option>Gelirler</option>
-                        <option>Giderler</option>
-                      </select>
-                      <button className="bg-[#78123e] text-white px-3 py-1 rounded-md hover:bg-[#5a0e2c] transition-colors text-sm cursor-pointer">
-                        Yeni İşlem
-                      </button>
-                    </div>
-                  </div>
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Açıklama</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarih</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Miktar</th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Durum</th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {[
-                        { desc: 'A Holding Sponsorluk', date: '15 Nis 2024', amount: '+₺5,000', status: 'Onaylandı', type: 'gelir' },
-                        { desc: 'Workshop Malzemeleri', date: '10 Nis 2024', amount: '-₺1,250', status: 'Onaylandı', type: 'gider' },
-                        { desc: 'B Firması Sponsorluk', date: '8 Nis 2024', amount: '+₺3,000', status: 'Onaylandı', type: 'gelir' },
-                        { desc: 'Konuşmacı Ödemesi', date: '5 Nis 2024', amount: '-₺2,500', status: 'Onaylandı', type: 'gider' },
-                        { desc: 'Fakülte Destek Fonu', date: '1 Nis 2024', amount: '+₺2,500', status: 'Onaylandı', type: 'gelir' },
-                        { desc: 'Tanıtım Afişleri', date: '28 Mar 2024', amount: '-₺750', status: 'Onaylandı', type: 'gider' },
-                        { desc: 'Teknik Ekipman', date: '15 Mar 2024', amount: '-₺3,200', status: 'Onaylandı', type: 'gider' },
-                      ].map((item, idx) => (
-                        <tr key={idx} className={item.type === 'gelir' ? 'bg-green-50' : ''}>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.desc}</td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.date}</td>
-                          <td className={`px-6 py-4 whitespace-nowrap text-sm font-medium ${item.type === 'gelir' ? 'text-green-600' : 'text-red-600'}`}>
-                            {item.amount}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                              {item.status}
-                            </span>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
                 </div>
               </div>
             )}

@@ -88,7 +88,7 @@ export default function Contact() {
             </p>
           </div>
 
-          <div className={`bg-white rounded-lg shadow-lg overflow-hidden mb-16 transition-all duration-700 delay-100 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+          <div className={`bg-white rounded-2xl shadow-lg overflow-hidden mb-16 transition-all duration-700 delay-100 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
             <div className="md:flex">
               <div className="md:w-1/2 p-8">
                 <div className="mb-6">
@@ -99,7 +99,7 @@ export default function Contact() {
                 </div>
 
                 {isSubmitted ? (
-                  <div className="bg-green-50 border border-green-200 rounded-md p-6 text-center">
+                  <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center">
                     <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
                       <Check className="h-6 w-6 text-green-600" />
                     </div>
@@ -316,7 +316,7 @@ export default function Contact() {
             ].map((item, index) => (
               <div 
                 key={index} 
-                className={`bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center transition-all duration-700 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
+                className={`bg-white p-6 rounded-2xl shadow-md flex flex-col items-center text-center transition-all duration-700 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}
                 style={{ transitionDelay: `${200 + index * 100}ms` }}
               >
                 <div className={`${item.bgColor} p-3 rounded-full mb-4`}>
@@ -329,7 +329,7 @@ export default function Contact() {
             ))}
           </div>
           
-          <div className={`bg-white rounded-lg shadow-lg overflow-hidden transition-all duration-700 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '500ms' }}>
+          <div className={`bg-white rounded-2xl shadow-lg overflow-hidden transition-all duration-700 transform ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`} style={{ transitionDelay: '500ms' }}>
             <iframe 
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3127.1234567890123!2d39.19608212726022!3d38.68128665453678!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzjCsDQwJzUyLjYiTiAzOcKwMTEnNDUuOSJF!5e0!3m2!1str!2str!4v1234567890123!5m2!1str!2str"
               className="w-full h-[250px]" 

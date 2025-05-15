@@ -94,7 +94,7 @@ export default function RegisterPage() {
         password_confirmation: formData.passwordConfirmation
       };
 
-      const response = await fetch('http://127.0.0.1:8000/api/register', {
+      const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

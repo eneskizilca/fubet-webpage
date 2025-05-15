@@ -50,7 +50,7 @@ export default function JoinTeamPage() {
             Açıldığında duyurular kısmından yayınlanacaktır.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link href="/events" className="px-6 py-3 rounded-full bg-gradient-to-r from-[#78123e] to-[#a71255] text-white font-bold text-base shadow hover:scale-105 transition-transform duration-200">
+            <Link href="/events/calendar" className="px-6 py-3 rounded-full bg-gradient-to-r from-[#78123e] to-[#a71255] text-white font-bold text-base shadow hover:scale-105 transition-transform duration-200">
               Etkinliklerimize Katıl
             </Link>
             <Link href="/about/team" className="px-6 py-3 rounded-full bg-white/20 text-white font-bold text-base shadow hover:scale-105 transition-transform duration-200 backdrop-blur-sm border border-white/10">

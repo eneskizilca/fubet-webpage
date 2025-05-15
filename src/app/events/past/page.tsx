@@ -127,12 +127,18 @@ export default function PastEventsPage() {
   const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
   const [modalSlide, setModalSlide] = useState(0);
   const eventsPerPage = 4;
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  // Filtreleme işlemleri için
+  const filteredEvents = selectedCategory === 'all' 
+    ? pastEvents 
+    : pastEvents.filter(event => event.category === selectedCategory);
 
   // Pagination hesaplamaları
-  const totalPages = Math.ceil(pastEvents.length / eventsPerPage);
+  const totalPages = Math.ceil(filteredEvents.length / eventsPerPage);
   const startIndex = (currentPage - 1) * eventsPerPage;
-  const endIndex = Math.min(startIndex + eventsPerPage, pastEvents.length);
-  const currentEvents = pastEvents.slice(startIndex, endIndex);
+  const endIndex = Math.min(startIndex + eventsPerPage, filteredEvents.length);
+  const currentEvents = filteredEvents.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
@@ -142,7 +148,7 @@ export default function PastEventsPage() {
   const handlePrevSlide = (eventId: number) => {
     setCurrentSlides((prev) => {
       const currentSlide = prev[eventId] || 0;
-      const event = pastEvents.find(e => e.id === eventId);
+      const event = filteredEvents.find(e => e.id === eventId);
       if (!event) return prev;
       
       const newSlide = currentSlide === 0 ? event.images.length - 1 : currentSlide - 1;
@@ -153,7 +159,7 @@ export default function PastEventsPage() {
   const handleNextSlide = (eventId: number) => {
     setCurrentSlides((prev) => {
       const currentSlide = prev[eventId] || 0;
-      const event = pastEvents.find(e => e.id === eventId);
+      const event = filteredEvents.find(e => e.id === eventId);
       if (!event) return prev;
       
       const newSlide = currentSlide === event.images.length - 1 ? 0 : currentSlide + 1;
@@ -184,7 +190,7 @@ export default function PastEventsPage() {
   const handleModalPrevSlide = () => {
     if (selectedEvent === null) return;
     
-    const event = pastEvents.find(e => e.id === selectedEvent);
+    const event = filteredEvents.find(e => e.id === selectedEvent);
     if (!event) return;
     
     setModalSlide(prev => (prev === 0 ? event.images.length - 1 : prev - 1));
@@ -193,7 +199,7 @@ export default function PastEventsPage() {
   const handleModalNextSlide = () => {
     if (selectedEvent === null) return;
     
-    const event = pastEvents.find(e => e.id === selectedEvent);
+    const event = filteredEvents.find(e => e.id === selectedEvent);
     if (!event) return;
     
     setModalSlide(prev => (prev === event.images.length - 1 ? 0 : prev + 1));
@@ -211,7 +217,7 @@ export default function PastEventsPage() {
 
   const getSelectedEventImages = () => {
     if (selectedEvent === null) return [];
-    const event = pastEvents.find(e => e.id === selectedEvent);
+    const event = filteredEvents.find(e => e.id === selectedEvent);
     return event ? event.images : [];
   };
 
@@ -220,10 +226,66 @@ export default function PastEventsPage() {
       <main className="flex-grow bg-gradient-to-br from-[#172c5c] to-[#78123e] py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-3xl font-bold text-white mb-8 text-center">Etkinlikler</h1>
-          <p className="text-center text-white/80 mb-12 max-w-3xl mx-auto">
+          <p className="text-center text-white/80 mb-8 max-w-3xl mx-auto">
             Yazılım ve teknoloji dünyasının geleceğini birlikte keşfetmeye hazır mısınız? E tabii biraz da eğlenmeyi unutmayalım...
           </p>
           
+          {/* Category filter - from main events page */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+                selectedCategory === 'all'
+                  ? 'bg-white text-[#172c5c]'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              Tümü
+            </button>
+            <button
+              onClick={() => setSelectedCategory('Yazılım Eğitimleri')}
+              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+                selectedCategory === 'Yazılım Eğitimleri'
+                  ? 'bg-white text-[#172c5c]'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              Yazılım Eğitimleri
+            </button>
+            <button
+              onClick={() => setSelectedCategory('Teknik Geziler')}
+              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+                selectedCategory === 'Teknik Geziler'
+                  ? 'bg-white text-[#172c5c]'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              Teknik Geziler
+            </button>
+            <button
+              onClick={() => setSelectedCategory('Konferanslar')}
+              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+                selectedCategory === 'Konferanslar'
+                  ? 'bg-white text-[#172c5c]'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              Konferanslar
+            </button>
+            <button
+              onClick={() => setSelectedCategory('Sosyal Faaliyetler')}
+              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+                selectedCategory === 'Sosyal Faaliyetler'
+                  ? 'bg-white text-[#172c5c]'
+                  : 'bg-white/10 text-white hover:bg-white/20'
+              }`}
+            >
+              Sosyal Faaliyetler
+            </button>
+          </div>
+          
+          {/* Past Events Section - Original Content */}
+          <h2 className="text-2xl font-bold text-white mb-6">Etkinliklerimiz</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {currentEvents.map((event) => (
               <div key={event.id} className="bg-white/10 backdrop-blur-md rounded-xl overflow-hidden shadow-lg">
@@ -380,7 +442,7 @@ export default function PastEventsPage() {
                   />
                 </div>
               ))}
-      </div>
+            </div>
 
             {/* Modal Slider Kontrolleri */}
             <button 
@@ -410,7 +472,7 @@ export default function PastEventsPage() {
               ))}
             </div>
           </div>
-      </div>
+        </div>
       )}
 
       <Footer />

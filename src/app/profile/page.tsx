@@ -4,6 +4,7 @@ import Navbar from '@/components/Navbar';
 import { Mail, MapPin, Phone, Calendar, Edit, Save, X } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 // Default user data structure and type
 interface UserData {
@@ -16,7 +17,7 @@ interface UserData {
   email: string;
   faculty: string;
   department: string;
-  class: number;
+  class: string;
   birth_date: string;
   avatar: string;
   joinDate: string;
@@ -30,7 +31,7 @@ const defaultUser: UserData = {
   email: '',
   faculty: '',
   department: '',
-  class: 1,
+  class: '1',
   birth_date: '',
   avatar: '/user-neutral.png',
   joinDate: ''
@@ -47,17 +48,29 @@ export default function ProfilePage() {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [updateError, setUpdateError] = useState("");
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+
+  // Debug fonksiyonu
+  const debugRequest = (message: string, data: any) => {
+    console.log(`DEBUG - ${message}:`, data);
+  };
 
   useEffect(() => {
     // Check authentication and get user data from localStorage
     const token = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
     
+    debugRequest('Token', token);
+    debugRequest('Stored user', storedUser);
+    
     if (!token || !storedUser) {
       // Redirect to login if not authenticated
       router.push('/login');
       return;
     }
+
+    // Token'ı state'e kaydet
+    setAuthToken(token);
 
     try {
       const parsedUser = JSON.parse(storedUser) as any; // API'den gelen veriyi önce any olarak işleyelim
@@ -94,6 +107,12 @@ export default function ProfilePage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
+    // Öğrenci numarası ve e-posta değiştirilemez
+    if (name === 'student_number' || name === 'email') {
+      return;
+    }
+    
     setFormData({
       ...formData,
       [name]: value
@@ -106,53 +125,51 @@ export default function ProfilePage() {
     setUpdateSuccess(false);
     
     try {
+      // Token kontrolü
       const token = localStorage.getItem('token');
       
       if (!token) {
         throw new Error("Oturum süresi dolmuş. Lütfen tekrar giriş yapın.");
       }
       
-      // MongoDB ID'sini al (user.id)
-      const userId = user.id;
-      console.log("Update edilecek ID:", userId);
+      // Güncelleme verileri - Laravel validasyon kurallarına göre
+      const updateData = {
+        name: formData.name,
+        surname: formData.surname,
+        student_number: formData.student_number,
+        phone: formData.phone,
+        email: formData.email,
+        faculty: formData.faculty,
+        department: formData.department,
+        class: formData.class,
+        birth_date: formData.birth_date,
+      };
       
-      // API'ye istek gönder
-      const response = await fetch(`http://127.0.0.1:8000/api/panel/users/${userId}`, {
-        method: 'PUT',
+      // API endpoint'e istek gönder
+      const response = await fetch('/api/profile/update', {
+        method: 'POST',
         headers: {
+          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          name: formData.name,
-          surname: formData.surname,
-          phone: formData.phone,
-          faculty: formData.faculty,
-          department: formData.department,
-          class: parseInt(formData.class.toString()),
-          birth_date: formData.birth_date,
-          student_number: formData.student_number
-        })
+        body: JSON.stringify(updateData),
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Güncelleme işlemi başarısız oldu');
-      }
       
       const data = await response.json();
-      console.log("Update başarılı:", data);
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Profil güncellenirken bir hata oluştu');
+      }
       
       // State ve localStorage güncelle
-      setUser({
+      const updatedUser = {
         ...user,
-        ...data
-      });
+        ...data,
+      };
       
-      localStorage.setItem('user', JSON.stringify({
-        ...JSON.parse(localStorage.getItem('user') || '{}'),
-        ...data
-      }));
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
       
       setUpdateSuccess(true);
       
@@ -161,9 +178,14 @@ export default function ProfilePage() {
         setIsEditing(false);
       }, 2000);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Güncelleme hatası:', error);
-      setUpdateError(error instanceof Error ? error.message : 'Güncelleme sırasında bir hata oluştu');
+      
+      if (error.message) {
+        setUpdateError(error.message);
+      } else {
+        setUpdateError('Bilinmeyen bir hata oluştu');
+      }
     } finally {
       setUpdateLoading(false);
     }
@@ -409,9 +431,18 @@ export default function ProfilePage() {
                           type="tel" 
                           name="phone" 
                           value={formData.phone} 
-                          onChange={handleInputChange}
+                          onChange={(e) => {
+                            // Telefon formatını kontrol et (05xxxxxxxxx)
+                            const value = e.target.value;
+                            if (value === '' || /^05\d{0,9}$/.test(value)) {
+                              setFormData({...formData, phone: value});
+                            }
+                          }}
+                          placeholder="05xxxxxxxxx"
+                          maxLength={11}
                           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#78123e] focus:border-transparent"
                         />
+                        <p className="text-xs text-gray-500 mt-1">05xxxxxxxxx formatında olmalıdır</p>
                       </div>
                       <div className="flex flex-col gap-1">
                         <label className="flex items-center gap-2 font-medium">
@@ -458,7 +489,11 @@ export default function ProfilePage() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                           </svg>
                           <span className="font-medium">Sınıf:</span> 
-                          <span>{user.class}. Sınıf</span>
+                          <span>
+                            {user.class === "Hazırlık" || user.class === "Yüksek Lisans" 
+                              ? user.class 
+                              : `${user.class}. Sınıf`}
+                          </span>
                         </div>
                         
                         <div className="flex items-center gap-3">
@@ -519,17 +554,17 @@ export default function ProfilePage() {
                           <select
                             name="class"
                             value={formData.class}
-                            onChange={(e) => setFormData({...formData, class: parseInt(e.target.value)})}
+                            onChange={(e) => setFormData({...formData, class: e.target.value})}
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#78123e] focus:border-transparent"
                           >
-                            <option value={0}>Hazırlık</option>
-                            <option value={1}>1. Sınıf</option>
-                            <option value={2}>2. Sınıf</option>
-                            <option value={3}>3. Sınıf</option>
-                            <option value={4}>4. Sınıf</option>
-                            <option value={5}>5. Sınıf</option>
-                            <option value={6}>6. Sınıf</option>
-                            <option value={99}>Yüksek Lisans</option>
+                            <option value="Hazırlık">Hazırlık</option>
+                            <option value="1">1. Sınıf</option>
+                            <option value="2">2. Sınıf</option>
+                            <option value="3">3. Sınıf</option>
+                            <option value="4">4. Sınıf</option>
+                            <option value="5">5. Sınıf</option>
+                            <option value="6">6. Sınıf</option>
+                            <option value="Yüksek Lisans">Yüksek Lisans</option>
                           </select>
                         </div>
                         
@@ -544,11 +579,11 @@ export default function ProfilePage() {
                             type="text" 
                             name="student_number" 
                             value={formData.student_number} 
-                            onChange={handleInputChange}
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#78123e] focus:border-transparent"
+                            disabled
+                            className="w-full px-3 py-2 border rounded-lg bg-gray-100 text-gray-500 cursor-not-allowed"
                             placeholder="Öğrenci numaranızı giriniz"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Öğrenci numarası yazınız. Numaranızı değiştirirseniz kayıt etmeden önce şifreniz size tekrar sorulacaktır.</p>
+                          <p className="text-xs text-gray-500 mt-1">Öğrenci numarası değiştirilemez.</p>
                         </div>
                       </>
                     )}

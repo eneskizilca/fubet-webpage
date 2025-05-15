@@ -128,21 +128,22 @@ export default function Navbar() {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex space-x-8 items-center">
-            <Link href="/" className="text-gray-700 hover:text-[#78123e] font-medium">Ana Sayfa</Link>
+          <div className="hidden md:flex space-x-4 items-center">
+            <Link href="/" className="px-2 text-gray-700 hover:text-[#78123e] font-medium transition duration-200">Ana Sayfa</Link>
+
+            <Link href="/announcements" className="px-2 text-gray-700 hover:text-[#78123e] font-medium transition duration-200">Duyurular</Link>
 
             {/* Etkinlikler */}
             <div 
-              className="relative"
+              className="relative px-2"
               onMouseEnter={() => handleDropdownMouseEnter('etkinlikler')}
               onMouseLeave={handleDropdownMouseLeave}
             >
-              <Link 
-                href="/events"
-                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-300 cursor-pointer"
+              <span 
+                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-200 cursor-pointer"
               >
                 Etkinlikler
-              </Link>
+              </span>
               <div className={`absolute left-0 mt-2 w-fit min-w-max bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-200 z-50 ${
                 activeDropdown === 'etkinlikler' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}>
@@ -162,13 +163,13 @@ export default function Navbar() {
             </div>
 
             {/* Etkinlik Öner */}
-            <div className="relative"
+            <div className="relative px-2"
               onMouseEnter={() => setIsSuggestEventHovered(true)}
               onMouseLeave={() => setIsSuggestEventHovered(false)}
             >
               <button
                 type="button"
-                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-300 flex items-center gap-2 group cursor-pointer"
+                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-200 flex items-center gap-2 group cursor-pointer"
                 onClick={() => setShowSuggestModal(true)}
               >
                 Etkinlik Öner
@@ -232,13 +233,13 @@ export default function Navbar() {
 
             {/* Hakkımızda */}
             <div 
-              className="relative"
+              className="relative px-2"
               onMouseEnter={() => handleDropdownMouseEnter('hakkimizda')}
               onMouseLeave={handleDropdownMouseLeave}
             >
               <button 
                 onClick={() => handleDropdownClick('hakkimizda')}
-                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-300 cursor-pointer"
+                className="text-gray-700 hover:text-[#78123e] font-medium transition duration-200 cursor-pointer"
               >
                 Hakkımızda
               </button>
@@ -261,7 +262,7 @@ export default function Navbar() {
             </div>
 
             {/* Bize Ulaşın */}
-            <Link href="/contact" className="text-gray-700 hover:text-[#78123e] font-medium">Bize Ulaşın</Link>
+            <Link href="/contact" className="px-2 text-gray-700 hover:text-[#78123e] font-medium transition duration-200">Bize Ulaşın</Link>
 
             {/* Auth */}
             {isAuthenticated ? (
@@ -322,8 +323,9 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden bg-white px-4 py-3 space-y-2 shadow-md">
           <Link href="/" className="block text-gray-700">Ana Sayfa</Link>
+          <Link href="/announcements" className="block text-gray-700">Duyurular</Link>
           <div>
-            <Link href="/events" className="block text-gray-700">Etkinlikler</Link>
+            <span className="block text-gray-700">Etkinlikler</span>
             <div className="ml-4 space-y-1">
               <Link href="/events/calendar" className="block text-sm text-gray-600">Etkinlik Takvimi</Link>
               <Link href="/events/past" className="block text-sm text-gray-600">Geçmiş Etkinlikler</Link>

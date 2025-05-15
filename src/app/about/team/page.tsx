@@ -41,7 +41,7 @@ interface Department {
 }
 
 // Placeholder görsel URL'i
-const PLACEHOLDER_IMAGE = "https://via.placeholder.com/150";
+const PLACEHOLDER_IMAGE = "/placeholder-avatar.png";
 
 const departments: Department[] = [
   {
@@ -322,7 +322,8 @@ export default function TeamPage() {
                     <Image
                       src={president.image}
                       alt={president.name}
-                      fill
+                      width={192}
+                      height={192}
                       className="object-cover"
                     />
                   )}
@@ -424,7 +425,8 @@ export default function TeamPage() {
                           <Image
                             src={member.image}
                             alt={member.name}
-                            fill
+                            width={128}
+                            height={128}
                             className="object-cover"
                           />
                         )}

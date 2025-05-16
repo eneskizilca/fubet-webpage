@@ -32,35 +32,20 @@ export default function RegisterPage() {
 
   const validateForm = () => {
     // Öğrenci numarası kontrolü
-    if (!/^\d{9}$/.test(formData.studentNumber)) {
-      setError('Öğrenci numarası 9 karakter olmalıdır.');
+    if (formData.studentNumber.trim() === '') {
+      setError('Öğrenci numarası boş olamaz.');
       return false;
     }
 
     // Telefon numarası kontrolü
-    if (!/^0\d{10}$/.test(formData.phone)) {
-      setError('Telefon numarası 0 ile başlamalı ve 11 karakter olmalıdır.');
+    if (formData.phone.trim() === '') {
+      setError('Telefon numarası boş olamaz.');
       return false;
     }
 
     // Email kontrolü
-    if (!formData.email.endsWith('@firat.edu.tr')) {
-      setError('Email adresi @firat.edu.tr ile bitmelidir.');
-      return false;
-    }
-
-    // Sınıf kontrolü
-    const classYear = parseInt(formData.classYear);
-    if (isNaN(classYear) || classYear < 1 || classYear > 6) {
-      setError('Sınıf 1-6 arasında olmalıdır.');
-      return false;
-    }
-
-    // Doğum tarihi kontrolü
-    const birthDate = new Date(formData.birthDate);
-    const today = new Date();
-    if (birthDate >= today) {
-      setError('Doğum tarihi bugünden önce olmalıdır.');
+    if (!formData.email.includes('@')) {
+      setError('Geçerli bir email adresi giriniz.');
       return false;
     }
 
@@ -75,19 +60,19 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    console.log('Submitting form...');
     
     if (!validateForm()) {
+      console.log('Form validation failed');
+      setLoading(false);
       return;
     }
 
-    // Direkt verify sayfasına yönlendir
-    router.push('/please-verify');
+    // Display a feedback message
+    setError('Kayıt işleminiz devam ediyor, lütfen bekleyin...');
     
-    // Yönlendirme problemine karşı yedek çözüm
-    window.location.href = '/please-verify';
-    
-    setLoading(true);
-
+    console.log('Form validation successful, submitting to API...');
     try {
       const requestData = {
         name: formData.firstName,
@@ -103,6 +88,18 @@ export default function RegisterPage() {
         password_confirmation: formData.passwordConfirmation
       };
 
+      console.log('Sending request with data:', requestData);
+      
+      // Direkt olarak doğrulama sayfasına yönlendir, form işlemi arka planda devam edecek
+      router.push('/please-verify');
+      
+      // Yönlendirme problemine karşı yedek çözüm
+      setTimeout(() => {
+        console.log('Immediate redirect triggering...');
+        window.location.href = '/please-verify';
+      }, 100);
+      
+      // Form gönderme işlemi devam etsin
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
@@ -111,7 +108,9 @@ export default function RegisterPage() {
         body: JSON.stringify(requestData),
       });
 
+      console.log('Response received with status:', response.status);
       const data = await response.json();
+      console.log('Response data:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Kayıt işlemi başarısız oldu');
@@ -121,17 +120,12 @@ export default function RegisterPage() {
       if (data.token && data.user) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-      } else {
-        // Token ve kullanıcı bilgisi yoksa login sayfasına yönlendir
-        router.push('/login');
-        
-        // Yönlendirme problemi için yedek çözüm
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 500);
+        console.log('Saved user data to localStorage');
       }
+      
     } catch (error) {
-      setError(error instanceof Error ? error.message : 'Bir hata oluştu');
+      console.error('Registration error:', error);
+      // Hata oldu, ama kullanıcı zaten başka sayfada olabilir, o yüzden sadece logla
     } finally {
       setLoading(false);
     }
@@ -273,14 +267,25 @@ export default function RegisterPage() {
           />
 
           {error && (
-            <p className="text-red-600 text-sm text-center">{error}</p>
+            <div className={`p-3 rounded-lg text-center ${error.includes('devam ediyor') ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>
+              {error}
+            </div>
           )}
 
           <button
             type="submit"
-            className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg cursor-pointer"
+            disabled={loading}
+            className="w-full bg-[#78123e] text-white py-3 rounded-xl hover:bg-[#601031] transition-shadow shadow-md hover:shadow-lg cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Kayıt Ol
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Kaydediliyor...
+              </div>
+            ) : 'Kayıt Ol'}
           </button>
         </form>
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SuggestEventHoverProvider } from '../context/SuggestEventHoverContext';
+import VerificationCheck from "@/components/VerificationCheck";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,7 +24,9 @@ export default function RootLayout({
       </head>
       <body className="font-sans">
         <SuggestEventHoverProvider>
-          {children}
+          <VerificationCheck>
+            {children}
+          </VerificationCheck>
         </SuggestEventHoverProvider>
       </body>
     </html>

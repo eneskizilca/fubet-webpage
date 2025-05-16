@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+// API Base URL - can be modified in one place if the backend URL changes
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const RESEND_ENDPOINT = `${API_BASE_URL}/mail/resend`;
+
 export async function POST(request: Request) {
   try {
     console.log('API Route: Resend verification request received');
@@ -15,9 +19,9 @@ export async function POST(request: Request) {
       );
     }
     
-    console.log('API Route: Sending verification email resend request');
+    console.log(`API Route: Sending verification email resend request to ${RESEND_ENDPOINT}`);
     // Backend API'sine istek gönder
-    const backendResponse = await fetch('http://127.0.0.1:8000/api/mail/resend', {
+    const backendResponse = await fetch(RESEND_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

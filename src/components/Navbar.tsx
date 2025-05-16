@@ -34,7 +34,11 @@ export default function Navbar() {
         try {
           const userData = JSON.parse(user);
           // E-posta doğrulanmamışsa ve sayfa /please-verify değilse yönlendir
-          if (userData && !userData.isMailValidated && 
+          const isMailValidated = userData.isMailValidated || 
+                                 (userData.email_verified_at !== null && 
+                                  userData.email_verified_at !== undefined);
+          
+          if (!isMailValidated && 
               typeof window !== 'undefined' && 
               pathname !== '/please-verify') {
             router.push('/please-verify');

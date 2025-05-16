@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { redirect } from 'next/navigation';
 
+// API Base URL - can be modified in one place if the backend URL changes
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const VERIFY_EMAIL_ENDPOINT = `${API_BASE_URL}/mail/verify`;
+
 export async function GET(request: Request) {
   try {
     console.log('API Route: Email verification request received');
@@ -12,8 +16,8 @@ export async function GET(request: Request) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
     
-    console.log('API Route: Verifying email with token');
-    const backendResponse = await fetch('http://127.0.0.1:8000/api/mail/verify', {
+    console.log(`API Route: Verifying email with token at ${VERIFY_EMAIL_ENDPOINT}`);
+    const backendResponse = await fetch(VERIFY_EMAIL_ENDPOINT, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

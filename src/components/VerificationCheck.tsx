@@ -38,6 +38,7 @@ export default function VerificationCheck({ children }: { children: React.ReactN
 
   useEffect(() => {
     const checkAuth = async () => {
+      console.log('VerificationCheck - Checking auth for path:', pathname);
       setIsChecking(true);
       
       // Exclude paths that don't need verification
@@ -48,7 +49,28 @@ export default function VerificationCheck({ children }: { children: React.ReactN
         '/please-verify'
       ];
       
+      // Ana sayfa için özel işlem
+      if (pathname === '/') {
+        console.log('VerificationCheck - Homepage detected, checking if user wants to access restricted content');
+        
+        // Ana sayfayı herkes görüntüleyebilir, sadece kontrol etmek için isChecking'i false yapalım
+        const token = localStorage.getItem('token');
+        
+        // Token yoksa (giriş yapılmamışsa) sadece sayfayı göster, kontrol et
+        if (!token) {
+          console.log('VerificationCheck - No token on homepage, showing public view');
+          setIsChecking(false);
+          return;
+        }
+        
+        // Kullanıcı giriş yapmış ve ana sayfada, email doğrulama durumunu kontrol et
+        // ama sayfa erişimine izin ver (sadece navbar'daki profil kısmı için kontrol)
+        setIsChecking(false);
+        return;
+      }
+      
       if (excludedPaths.some(path => pathname?.startsWith(path))) {
+        console.log('VerificationCheck - Excluded path detected, allowing access');
         setIsChecking(false);
         return;
       }
@@ -59,6 +81,11 @@ export default function VerificationCheck({ children }: { children: React.ReactN
           // Kullanıcı oturum açmamış, login'e yönlendir
           console.log('No token found, redirecting to login');
           router.push('/login');
+          
+          // Yönlendirme problemi için yedek çözüm
+          setTimeout(() => {
+            window.location.href = '/login';
+          }, 300);
           return;
         }
 
@@ -74,6 +101,11 @@ export default function VerificationCheck({ children }: { children: React.ReactN
               console.log('User not validated, redirecting to please-verify');
               if (pathname !== '/please-verify') {
                 router.push('/please-verify');
+                
+                // Yönlendirme problemi için yedek çözüm
+                setTimeout(() => {
+                  window.location.href = '/please-verify';
+                }, 300);
               }
               setIsChecking(false);
               return;
@@ -104,6 +136,11 @@ export default function VerificationCheck({ children }: { children: React.ReactN
               console.log('Backend says user not validated, redirecting to please-verify');
               if (pathname !== '/please-verify') {
                 router.push('/please-verify');
+                
+                // Yönlendirme problemi için yedek çözüm
+                setTimeout(() => {
+                  window.location.href = '/please-verify';
+                }, 300);
               }
             }
           }

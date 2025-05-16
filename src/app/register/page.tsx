@@ -90,16 +90,7 @@ export default function RegisterPage() {
 
       console.log('Sending request with data:', requestData);
       
-      // Direkt olarak doğrulama sayfasına yönlendir, form işlemi arka planda devam edecek
-      router.push('/please-verify');
-      
-      // Yönlendirme problemine karşı yedek çözüm
-      setTimeout(() => {
-        console.log('Immediate redirect triggering...');
-        window.location.href = '/please-verify';
-      }, 100);
-      
-      // Form gönderme işlemi devam etsin
+      // Önce API isteğini gönder ve cevabı bekle
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
@@ -123,10 +114,20 @@ export default function RegisterPage() {
         console.log('Saved user data to localStorage');
       }
       
+      // API isteği başarılıysa doğrulama sayfasına yönlendir
+      console.log('Registration successful, redirecting to verification page');
+      router.push('/please-verify');
+      
+      // Yönlendirme problemine karşı yedek çözüm
+      setTimeout(() => {
+        console.log('Fallback redirect triggering...');
+        window.location.href = '/please-verify';
+      }, 300);
+      
     } catch (error) {
       console.error('Registration error:', error);
-      // Hata oldu, ama kullanıcı zaten başka sayfada olabilir, o yüzden sadece logla
-    } finally {
+      // Hata durumunda kullanıcıya bilgi ver
+      setError(error instanceof Error ? error.message : 'Kayıt işlemi sırasında bir hata oluştu. Lütfen tekrar deneyin.');
       setLoading(false);
     }
   };

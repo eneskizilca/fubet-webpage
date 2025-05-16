@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 
+// API Base URL - can be modified in one place if the backend URL changes
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+const USER_PROFILE_ENDPOINT = `${API_BASE_URL}/me`;
+
 export async function GET(request: Request) {
   try {
     console.log('API Route: Check verification status request received');
@@ -15,9 +19,9 @@ export async function GET(request: Request) {
       );
     }
     
-    console.log('API Route: Fetching user profile to check verification status');
+    console.log(`API Route: Fetching user profile to check verification status from ${USER_PROFILE_ENDPOINT}`);
     // Backend API'sine istek gönder
-    const backendResponse = await fetch('http://127.0.0.1:8000/api/me', {
+    const backendResponse = await fetch(USER_PROFILE_ENDPOINT, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

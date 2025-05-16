@@ -6,20 +6,6 @@ import { useRouter } from 'next/navigation';
 
 const QUESTIONS = [
   {
-    question: 'Büyük düşün! Hangi küresel sorunlar sizin için en önemli?',
-    options: [
-      { label: 'Sürdürülebilirlik', icon: '🌱' },
-      { label: 'Eğitim', icon: '🎓' },
-      { label: 'Beden ve Zihin', icon: '💪' },
-      { label: 'Akıllı Şehirler', icon: '🏠' },
-      { label: 'Kariyer', icon: '🧑‍💼' },
-      { label: 'Erişilebilirlik', icon: '🌍' },
-      { label: 'Sağlık Hizmetleri', icon: '🧬' },
-      { label: 'Güçlendirme', icon: '🤝' },
-      { label: 'Yaratıcı Ekonomi', icon: '📢' },
-    ],
-  },
-  {
     question: 'Hangi etkinlik türleri seni daha çok motive eder?',
     options: [
       { label: 'Atölye', icon: '🛠️' },
@@ -155,6 +141,9 @@ export default function SuggestEventWithAiPage() {
                   className="h-full bg-[#78123e] transition-all duration-500"
                   style={{ width: `${((step + 1) / QUESTIONS.length) * 100}%` }}
                 />
+              </div>
+              <div className="mt-2 text-sm text-gray-500 text-center">
+                {step + 1} / {QUESTIONS.length}
               </div>
             </div>
             {/* Soru */}

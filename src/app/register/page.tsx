@@ -20,6 +20,7 @@ export default function RegisterPage() {
   });
 
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [isDateFocused, setIsDateFocused] = useState(false);
 
   const handleChange = (
@@ -74,10 +75,18 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!validateForm()) {
       return;
     }
+
+    // Direkt verify sayfasına yönlendir
+    router.push('/please-verify');
+    
+    // Yönlendirme problemine karşı yedek çözüm
+    window.location.href = '/please-verify';
+    
+    setLoading(true);
 
     try {
       const requestData = {
@@ -108,9 +117,23 @@ export default function RegisterPage() {
         throw new Error(data.message || 'Kayıt işlemi başarısız oldu');
       }
 
-      router.push('/');
+      // Kullanıcı bilgilerini ve token'ı localStorage'a kaydet (backend bu bilgileri döndürüyorsa)
+      if (data.token && data.user) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      } else {
+        // Token ve kullanıcı bilgisi yoksa login sayfasına yönlendir
+        router.push('/login');
+        
+        // Yönlendirme problemi için yedek çözüm
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 500);
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Bir hata oluştu');
+    } finally {
+      setLoading(false);
     }
   };
 

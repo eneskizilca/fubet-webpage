@@ -23,7 +23,20 @@ export async function POST(request: Request) {
       );
     }
     
-    return NextResponse.json(data);
+    // Yanıtı standardize et - eğer backend'den gelen veri yapısı farklıysa
+    const response = {
+      token: data.token || data.access_token || '',
+      user: {
+        ...(data.user || {}),
+        // Eğer backend'den gelen alan adı farklıysa burada standardize et
+        isMailValidated: data.user?.isMailValidated || 
+                         data.user?.is_mail_validated || 
+                         (data.user?.email_verified_at !== null && 
+                          data.user?.email_verified_at !== undefined)
+      }
+    };
+    
+    return NextResponse.json(response);
   } catch (error) {
     console.error('Login API error:', error);
     return NextResponse.json(

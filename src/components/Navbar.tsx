@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useRef, createContext, useContext, useEffect } from 'react';
 import { useSuggestEventHover } from '../context/SuggestEventHoverContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 export const SuggestEventHoverContext = createContext({
   isSuggestEventHovered: false,
@@ -21,12 +21,28 @@ export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem('token');
       const user = localStorage.getItem('user');
       setIsAuthenticated(!!token && !!user);
+      
+      // E-posta doğrulama kontrolü
+      if (token && user) {
+        try {
+          const userData = JSON.parse(user);
+          // E-posta doğrulanmamışsa ve sayfa /please-verify değilse yönlendir
+          if (userData && !userData.isMailValidated && 
+              typeof window !== 'undefined' && 
+              pathname !== '/please-verify') {
+            router.push('/please-verify');
+          }
+        } catch (error) {
+          console.error('Kullanıcı verisi çözümlenirken hata:', error);
+        }
+      }
     };
     
     checkAuth();
@@ -40,7 +56,7 @@ export default function Navbar() {
     return () => {
       window.removeEventListener('storage', handleStorageChange);
     };
-  }, []);
+  }, [router, pathname]);
   
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);

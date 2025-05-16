@@ -2,16 +2,17 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    // İstek gövdesinden verileri al
+    const requestData = await request.json();
     
-    // Forward the request to the backend API
-    const backendResponse = await fetch('http://127.0.0.1:8000/api/register', {
+    // Backend API'sine istek gönder
+    const backendResponse = await fetch('http://127.0.0.1:8000/api/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json',
+        'Accept': 'application/json'
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(requestData)
     });
     
     const data = await backendResponse.json();
@@ -23,11 +24,21 @@ export async function POST(request: Request) {
       );
     }
     
-    return NextResponse.json(data);
+    // Backend'in döndüğü token ve kullanıcı verisini standardize et
+    const token = data.token || data.access_token;
+    const user = data.user || {};
+    
+    return NextResponse.json({
+      token: token,
+      user: {
+        ...user,
+        isMailValidated: user.isMailValidated || user.is_mail_validated || false
+      }
+    });
   } catch (error) {
-    console.error('Register API error:', error);
+    console.error('Kayıt işlemi hatası:', error);
     return NextResponse.json(
-      { message: 'Sunucu hatası' },
+      { message: 'Sunucu hatası', error: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

@@ -45,8 +45,24 @@ export default function LoginPage() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
-      // Başarılı giriş sonrası ana sayfaya yönlendir
-      router.push('/');
+      // E-posta doğrulanmış mı kontrol et
+      if (data.user && !data.user.isMailValidated) {
+        // Doğrulanmamışsa doğrulama sayfasına yönlendir
+        router.push('/please-verify');
+        
+        // Yönlendirme problemi için yedek çözüm
+        setTimeout(() => {
+          window.location.href = '/please-verify';
+        }, 500);
+      } else {
+        // Doğrulanmışsa ana sayfaya yönlendir
+        router.push('/');
+        
+        // Yönlendirme problemi için yedek çözüm
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 500);
+      }
       
     } catch (error) {
       console.error('Login error:', error);

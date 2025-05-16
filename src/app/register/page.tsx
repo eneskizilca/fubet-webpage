@@ -74,7 +74,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -88,7 +88,7 @@ export default function RegisterPage() {
         email: formData.email,
         faculty: formData.faculty,
         department: formData.department,
-        class: parseInt(formData.classYear),
+        class: formData.classYear,
         birth_date: formData.birthDate,
         password: formData.password,
         password_confirmation: formData.passwordConfirmation

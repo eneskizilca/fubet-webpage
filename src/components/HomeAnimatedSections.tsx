@@ -26,9 +26,9 @@ export default function HomeAnimatedSections() {
           {/* Basit slider/carousel */}
           <div className="relative w-full overflow-x-auto flex gap-6 pb-2">
             {/* Placeholder images, replace with your own */}
-            <img src="/event1.jpg" alt="Etkinlik 1" className="h-56 w-80 object-cover rounded-xl shadow-md flex-shrink-0" />
-            <img src="/event2.jpg" alt="Etkinlik 2" className="h-56 w-80 object-cover rounded-xl shadow-md flex-shrink-0" />
-            <img src="/event3.jpg" alt="Etkinlik 3" className="h-56 w-80 object-cover rounded-xl shadow-md flex-shrink-0" />
+            <img src="event1.png" alt="Etkinlik 1" className="h-56 w-80 object-cover rounded-xl shadow-md flex-shrink-0" />
+            <img src="event2.png" alt="Etkinlik 2" className="h-56 w-80 object-cover rounded-xl shadow-md flex-shrink-0" />
+            <img src="event3.png" alt="Etkinlik 3" className="h-56 w-80 object-cover rounded-xl shadow-md flex-shrink-0" />
           </div>
         </div>
       </section>

@@ -14,7 +14,14 @@ import {
   Github, 
   ChevronRight,
   ChevronDown,
-  Star
+  Star,
+  BookOpen,
+  Award,
+  Code,
+  Terminal,
+  PenTool,
+  Briefcase,
+  Database
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import { SuggestEventHoverProvider } from '@/context/SuggestEventHoverContext';
@@ -198,9 +205,23 @@ const president = {
   }
 };
 
+// Topluluk Danışmanı
+const advisor = {
+  name: "Doç. Dr. Muhammet Baykara",
+  role: "Topluluk Danışman",
+  department: "Teknoloji Fakültesi Yazılım Mühendisliği Bölümü",
+  description: "Fırat Üniversitesi Teknoloji Fakültesi Yazılım Mühendisliği Bölümü hocası Doç. Dr. Muhammet Baykara, akademik kariyerinde ve sektörde birçok alanda çalışmalarını ve yayınlarını yapmaktadır. Kurulduğu 2023 yılından bu yana topluluğumuza değerli bilgi ve tecrübeleriyle rehberlik etmekte, öğrencilerin teknik ve profesyonel gelişimlerinde önemli rol oynamaktadır.",
+  image: "/muhammet-baykara.png",
+  social: {
+    linkedin: "https://linkedin.com",
+    twitter: "https://twitter.com"
+  }
+};
+
 export default function TeamPage() {
   const [visibleSections, setVisibleSections] = useState<string[]>([]);
   const [presidentVisible, setPresidentVisible] = useState(false);
+  const [advisorVisible, setAdvisorVisible] = useState(false);
 
   // Setup intersection observer
   useEffect(() => {
@@ -212,6 +233,8 @@ export default function TeamPage() {
             if (id) {
               if (id === 'president-section') {
                 setPresidentVisible(true);
+              } else if (id === 'advisor-section') {
+                setAdvisorVisible(true);
               } else {
                 setVisibleSections(prev => {
                   if (!prev.includes(id)) {
@@ -235,6 +258,12 @@ export default function TeamPage() {
       }
     });
     
+    // Observe advisor section
+    const advisorSection = document.getElementById('advisor-section');
+    if (advisorSection) {
+      observer.observe(advisorSection);
+    }
+    
     // Observe president section
     const presidentSection = document.getElementById('president-section');
     if (presidentSection) {
@@ -248,6 +277,10 @@ export default function TeamPage() {
           observer.unobserve(element);
         }
       });
+      
+      if (advisorSection) {
+        observer.unobserve(advisorSection);
+      }
       
       if (presidentSection) {
         observer.unobserve(presidentSection);
@@ -291,6 +324,73 @@ export default function TeamPage() {
           <div className="absolute inset-0 z-0 overflow-hidden">
             <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-[#78123e] blur-[120px] opacity-20"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-[#172c5c] blur-[150px] opacity-30"></div>
+          </div>
+        </section>
+
+        {/* Advisor Section */}
+        <section 
+          id="advisor-section"
+          className="py-24 px-4 relative bg-[#0c162b]/40"
+        >
+          <div className="container mx-auto max-w-4xl">
+            <div className={`flex flex-col items-center ${advisorVisible ? 'animate-slide-up' : 'opacity-0'}`}>
+              <div className="mb-8 flex flex-col items-center">
+                <div className="p-3 rounded-full bg-[#78123e] text-white mb-4">
+                  <BookOpen className="w-8 h-8" />
+                </div>
+                <h2 className="text-3xl md:text-5xl font-bold text-white text-center">TOPLULUK DANIŞMANI</h2>
+              </div>
+              
+              <div className={`bg-white/5 rounded-xl p-8 backdrop-blur-sm border border-white/10 transform w-full max-w-xl mx-auto ${
+                advisorVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+              }`}>
+                <div className="relative w-48 h-48 mx-auto mb-6 rounded-full overflow-hidden border-4 border-[#78123e]/30">
+                  <img
+                    src={advisor.image}
+                    alt={advisor.name}
+                    className="object-cover w-full h-full"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://placehold.co/200x200/172c5c/white?text=Doç.+Dr.+Baykara";
+                    }}
+                  />
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-white text-center">
+                  {advisor.name}
+                </h3>
+                <p className="text-[#f5b642] font-medium text-center text-xl mb-2">
+                  {advisor.role}
+                </p>
+                <p className="text-white/60 text-center mb-6">
+                  {advisor.department}
+                </p>
+                
+                <p className="text-white/80 text-center mb-6">
+                  {advisor.description}
+                </p>
+                
+                {advisor.social && (
+                  <div className="flex justify-center gap-4">
+                    {advisor.social.twitter && (
+                      <a href={advisor.social.twitter} target="_blank" rel="noopener noreferrer" 
+                         className="text-white/60 hover:text-[#1DA1F2] transition-colors">
+                        <Twitter className="w-6 h-6" />
+                      </a>
+                    )}
+                    {advisor.social.linkedin && (
+                      <a href={advisor.social.linkedin} target="_blank" rel="noopener noreferrer" 
+                         className="text-white/60 hover:text-[#0077b5] transition-colors">
+                        <Linkedin className="w-6 h-6" />
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <div className="absolute top-1/4 right-10 w-80 h-80 rounded-full bg-[#3a0d27] blur-[150px] opacity-15"></div>
+            <div className="absolute bottom-1/3 left-20 w-96 h-96 rounded-full bg-[#172c5c] blur-[120px] opacity-20"></div>
           </div>
         </section>
 

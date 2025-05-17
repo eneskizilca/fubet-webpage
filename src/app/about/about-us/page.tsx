@@ -58,6 +58,8 @@ export default function AboutUsPage() {
         {/* Navbar */}
         <Navbar />
         
+        
+        
         {/* Hero Section */}
         <section className="min-h-screen flex flex-col justify-center items-center relative px-4 pt-16">
           <div className="text-center z-10 max-w-4xl mx-auto">

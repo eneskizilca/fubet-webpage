@@ -260,9 +260,13 @@ export default function ProfilePage() {
                 </div>
                 <div className={`transition-all duration-700 delay-400 transform ${animateProfile ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'}`}>
                   <h2 className="text-2xl font-bold">{user.name} {user.surname}</h2>
-                  <p className="text-blue-200">{user.faculty}</p>
-                  <p className="text-blue-200">{user.department}</p>
-                  <p className="text-blue-200">Öğrenci No: {user.student_number}</p>
+                  {!isEditing && (
+                    <>
+                      <p className="text-blue-200">{user.faculty}</p>
+                      <p className="text-blue-200">{user.department}</p>
+                      <p className="text-blue-200">Öğrenci No: {user.student_number}</p>
+                    </>
+                  )}
                 </div>
               </div>
               <div className={`transition-all duration-700 delay-500 transform ${animateProfile ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}>
@@ -466,13 +470,15 @@ export default function ProfilePage() {
                   <h3 className="text-xl font-bold text-[#172c5c] mb-4 border-b pb-2">Akademik Bilgiler</h3>
                   
                   <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <svg className="text-[#78123e] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                      <span className="font-medium">Fakülte:</span> 
-                      <span>{user.faculty}</span>
-                    </div>
+                    {!isEditing && (
+                      <div className="flex items-center gap-3">
+                        <svg className="text-[#78123e] w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span className="font-medium">Fakülte:</span> 
+                        <span>{user.faculty}</span>
+                      </div>
+                    )}
                     
                     {!isEditing ? (
                       <>

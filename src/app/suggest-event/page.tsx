@@ -24,7 +24,7 @@ export default function SuggestEventPage() {
             <input
               id="title"
               type="text"
-              value={title}
+              value="Fırat Nehri Kıyısında Teknoloji ve Doğa Buluşması"
               onChange={e => setTitle(e.target.value)}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#78123e] outline-none text-lg"
               placeholder="Etkinlik başlığını girin"
@@ -35,7 +35,7 @@ export default function SuggestEventPage() {
             <label htmlFor="description" className="block text-lg font-bold text-[#78123e] mb-2">Açıklama</label>
             <textarea
               id="description"
-              value={description}
+              value="Fırat Nehri kıyısındaki muhteşem bir alanda,  teknik bir gezi ve eğlenceli takım oyunlarının birleşiminden oluşan bir hafta sonu etkinliği öneriyoruz.  Öncelikle, Elazığ'daki önemli bir teknoloji şirketini ziyaret ederek sektör hakkında bilgi edinme ve liderlik becerilerinizi gözlemleme fırsatı yakalayabilirsiniz. Ardından, nehir kenarında, doğanın içinde yaratıcılığınızı ve takım çalışmanızı ortaya koyacağınız eğlenceli takım oyunları düzenleyebiliriz.  Örneğin, nehir kıyısında bir ip atlama parkuru kurarak ve farklı takım oyunları oynayarak hem eğlenebilir hem de  takım çalışması ve liderlik becerilerinizi geliştirebiliriz.  Bu etkinlikte hem bilgi edinecek hem de eğlenceli vakit geçireceksiniz."
               onChange={e => setDescription(e.target.value)}
               className="w-full px-4 py-3 rounded-lg border-2 border-gray-200 focus:border-[#78123e] outline-none text-lg min-h-[140px] resize-vertical"
               placeholder="Etkinlik fikrini detaylıca anlat..."

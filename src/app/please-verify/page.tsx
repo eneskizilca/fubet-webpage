@@ -220,7 +220,7 @@ export default function VerifyEmailPage() {
               onClick={handleLoginRedirect}
               className="px-6 py-3 rounded-full bg-gradient-to-r from-[#78123e] to-[#172c5c] text-white font-bold text-md shadow hover:scale-105 transition-transform duration-200 w-full"
             >
-              Giriş Yap
+              Tekrar Gönder
             </button>
           </div>
         ) : (

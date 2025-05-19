@@ -208,7 +208,7 @@ const president = {
 // Topluluk Danışmanı
 const advisor = {
   name: "Doç. Dr. Muhammet Baykara",
-  role: "Topluluk Danışman",
+  role: "Topluluk Danışmanı",
   department: "Teknoloji Fakültesi Yazılım Mühendisliği Bölümü",
   description: "Fırat Üniversitesi Teknoloji Fakültesi Yazılım Mühendisliği Bölümü hocası Doç. Dr. Muhammet Baykara, akademik kariyerinde ve sektörde birçok alanda çalışmalarını ve yayınlarını yapmaktadır. Kurulduğu 2023 yılından bu yana topluluğumuza değerli bilgi ve tecrübeleriyle rehberlik etmekte, öğrencilerin teknik ve profesyonel gelişimlerinde önemli rol oynamaktadır.",
   image: "/muhammet-baykara.png",

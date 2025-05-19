@@ -601,6 +601,23 @@ export default function SuggestEventPage() {
                 )}
               </button>
             </div>
+
+            {/* Yeniden Yarat Butonu */}
+            <div className="button-wrapper mt-4">
+              <button
+                type="button"
+                disabled={isSubmitting}
+                className={`w-full py-3 rounded-xl text-white text-lg font-bold shadow transition cursor-pointer submit-button relative z-10 ${
+                  isSubmitting 
+                    ? 'bg-gray-400 cursor-not-allowed' 
+                    : 'bg-[#1a237e]'
+                }`}
+              >
+                <span className="button-text">
+                  Yeniden Yarat
+                </span>
+              </button>
+            </div>
           </form>
         </div>
       </main>

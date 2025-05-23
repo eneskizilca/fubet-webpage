@@ -86,6 +86,34 @@ const pulseGlowStyle = `
     }
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .modal-backdrop {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+
+  .modal-content {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
   .submit-button {
     position: relative;
     overflow: hidden;
@@ -183,14 +211,69 @@ const pulseGlowStyle = `
 `;
 
 export default function SuggestEventPage() {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
+  const [title, setTitle] = useState('Fırat Nehri Kıyısında Teknoloji ve Doğa Buluşması');
+  const [description, setDescription] = useState('Fırat Nehri kıyısındaki muhteşem bir alanda,  teknik bir gezi ve eğlenceli takım oyunlarının birleşiminden oluşan bir hafta sonu etkinliği öneriyoruz.  Öncelikle, Elazığ\'daki önemli bir teknoloji şirketini ziyaret ederek sektör hakkında bilgi edinme ve liderlik becerilerinizi gözlemleme fırsatı yakalayabilirsiniz. Ardından, nehir kenarında, doğanın içinde yaratıcılığınızı ve takım çalışmanızı ortaya koyacağınız eğlenceli takım oyunları düzenleyebiliriz.  Örneğin, nehir kıyısında bir ip atlama parkuru kurarak ve farklı takım oyunları oynayarak hem eğlenebilir hem de  takım çalışması ve liderlik becerilerinizi geliştirebiliriz.  Bu etkinlikte hem bilgi edinecek hem de eğlenceli vakit geçireceksiniz.');
   const [pastSuggestions, setPastSuggestions] = useState<Suggestion[]>([]);
   const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [showDetailedView, setShowDetailedView] = useState(false);
+
+  // Örnek etkinlik önerileri
+  const sampleEvents = [
+    {
+      title: "Göl Kenarında Yapay Zeka Kampı",
+      description: "Hazar Gölü kıyısında düzenlenecek bu hafta sonu kampında, doğa ile iç içe bir ortamda yapay zeka teknolojileri üzerine çalışabilir ve takım oluşturma aktiviteleri gerçekleştirebilirsiniz. Sabah saatlerinde uzman eğitmenler eşliğinde yapay zeka atölyeleri düzenlenecek, öğleden sonra ise açık havada takım çalışması ve problem çözme becerilerinizi geliştirecek aktiviteler yapılacak. Gün batımında göl kenarında yapılacak teknoloji sohbetleri ile günü tamamlayacağız. Bu etkinlik hem teknik bilginizi artıracak hem de doğanın güzelliklerini keşfetmenize olanak sağlayacak."
+    },
+    {
+      title: "Nemrut Dağı'nda Dijital Detoks ve Teknoloji Zirvesi",
+      description: "Dünyaca ünlü Nemrut Dağı'nda gerçekleşecek bu etkinlikte, tarihi kalıntılar arasında teknoloji dünyasından kısa bir mola verip, ardından sektör liderleriyle bir araya gelerek geleceğin teknolojileri hakkında fikir alışverişinde bulunabilirsiniz. Program kapsamında, gün doğumunda Nemrut'ta meditasyon ve dijital detoks, öğleden sonra ise bölgedeki teknoloji şirketleriyle buluşma ve workshop çalışmaları yer alıyor. Hem zihinsel dinginlik hem de mesleki gelişim için eşsiz bir fırsat sunan bu etkinlik, doğa ve teknolojinin mükemmel bir dengesini yaşamanızı sağlayacak."
+    },
+    {
+      title: "Keban Barajı Etrafında Drone Teknolojileri Atölyesi",
+      description: "Keban Barajı'nın muhteşem manzarası eşliğinde düzenlenecek bu etkinlikte, drone teknolojileri hakkında teorik ve pratik bilgiler edinebilirsiniz. Sabah saatlerinde drone pilotluğu ve hava fotoğrafçılığı eğitimleri verilecek, öğleden sonra ise gruplar halinde görevler tamamlanarak yarışmalar düzenlenecek. Baraj gölünün etrafında belirlenen rotalarda uçuş tekniklerini test edebilir, çektiğiniz görüntülerle mini bir belgesel yarışmasına katılabilirsiniz. Akşam saatlerinde ise çadır kampında teknoloji sohbetleriyle günü tamamlayacağız. Bu etkinlik hem teknik yetkinliklerinizi geliştirmenize hem de doğada keyifli vakit geçirmenize olanak tanıyacak."
+    },
+    {
+      title: "Harput Kalesi'nde Tarihi Teknoloji Buluşması",
+      description: "Tarihi Harput Kalesi'nin eteklerinde düzenlenecek bu etkinlikte, geçmişin ve geleceğin teknolojilerini bir arada inceleme fırsatı bulacaksınız. Sabah kale gezisi ve tarihsel teknolojik gelişimin anlatıldığı interaktif sunumlarla başlayacak program, öğleden sonra modern teknolojilerin tanıtıldığı atölye çalışmalarıyla devam edecek. Gruplar halinde yenilikçi fikirler geliştireceğiniz beyin fırtınası seansları ve takım çalışmasını güçlendirecek açık hava aktiviteleri ile hem bilgi dağarcığınızı genişletecek hem de tarihi bir mekânda unutulmaz bir deneyim yaşayacaksınız. Akşam saatlerinde Harput'un eşsiz manzarası eşliğinde teknoloji liderleriyle yapacağınız sohbetler ilham verici olacak."
+    },
+    {
+      title: "Munzur Vadisi'nde Yenilenebilir Enerji ve Doğa Kampı",
+      description: "Doğal güzellikleriyle ünlü Munzur Vadisi'nde düzenlenecek bu kampta, yenilenebilir enerji teknolojileri hakkında uygulamalı eğitimler alacak ve doğayla iç içe aktiviteler gerçekleştireceksiniz. İlk gün mini güneş panelleri ve rüzgar türbinleri yapımı atölyeleri düzenlenecek, ikinci gün ise vadi boyunca yürüyüş yaparak potansiyel enerji kaynaklarını tespit edeceksiniz. Akşamları kamp ateşi etrafında sektör profesyonelleriyle yapacağınız sohbetlerle bilgi birikimizini artırabilirsiniz. Ayrıca takım çalışmasını güçlendirecek doğa mücadele oyunları ve liderlik aktiviteleri ile hem öğrenecek hem de eğleneceksiniz."
+    }
+  ];
+
+  // Yeniden Yarat butonuna tıklandığında çağrılacak fonksiyon
+  const generateNewEvent = () => {
+    // Rastgele bir etkinlik seç
+    const randomIndex = Math.floor(Math.random() * sampleEvents.length);
+    const randomEvent = sampleEvents[randomIndex];
+    
+    // Başlık ve açıklamayı güncelle
+    setTitle(randomEvent.title);
+    setDescription(randomEvent.description);
+    
+    // Seçili öneriyi temizle
+    setSelectedSuggestion(null);
+    setError(null);
+    setSuccessMessage(null);
+  };
+
+  // URL parametrelerini kontrol et
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const titleParam = params.get('title');
+    const descriptionParam = params.get('description');
+
+    if (titleParam && descriptionParam) {
+      setTitle(titleParam);
+      setDescription(descriptionParam);
+      // URL'den parametreleri temizle
+      window.history.replaceState({}, '', '/suggest-event');
+    }
+  }, []);
 
   // Partikül efekti için referans
   const [particles, setParticles] = useState<Array<{id: number, x: number, y: number, size: number}>>([]);
@@ -421,6 +504,22 @@ export default function SuggestEventPage() {
     }
   }, [isSubmitting]);
 
+  // Handle ESC key press to close the modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && showDetailedView) {
+        setShowDetailedView(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    // Clean up
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [showDetailedView]);
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Style etiketini sayfaya ekle */}
@@ -525,7 +624,20 @@ export default function SuggestEventPage() {
               />
             </div>
             <div>
-              <label htmlFor="description" className="block text-lg font-bold text-[#78123e] mb-2">Açıklama</label>
+              <label htmlFor="description" className="block text-lg font-bold text-[#78123e] mb-2 flex items-center">
+                Açıklama
+                <button 
+                  type="button"
+                  onClick={() => setShowDetailedView(true)}
+                  className="ml-2 inline-flex items-center justify-center text-[#78123e] hover:text-white bg-white hover:bg-[#78123e] border border-[#78123e] rounded-md px-2 py-0.5 text-sm transition-colors duration-200"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 mr-1">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  Detaylı Bak
+                </button>
+              </label>
               <textarea
                 id="description"
                 value={description}
@@ -536,6 +648,33 @@ export default function SuggestEventPage() {
                 disabled={isSubmitting}
               />
             </div>
+
+            {/* Detaylı Görünüm Modal */}
+            {showDetailedView && (
+              <div className="fixed inset-0 backdrop-blur-sm bg-white/30 flex items-center justify-center z-50 modal-backdrop" onClick={() => setShowDetailedView(false)}>
+                <div className="bg-white rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto modal-content shadow-xl border border-gray-200" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex justify-between items-center mb-4 border-b pb-3">
+                    <h3 className="text-xl font-bold text-[#78123e]">Etkinlik Detayları</h3>
+                    <button 
+                      onClick={() => setShowDetailedView(false)} 
+                      className="p-1 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="mb-6 bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-[#78123e] mb-2">Başlık:</h4>
+                    <p className="text-xl font-medium">{title}</p>
+                  </div>
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="font-semibold text-[#78123e] mb-2">Açıklama:</h4>
+                    <p className="text-lg whitespace-pre-wrap" style={{ lineHeight: "1.8" }}>{description}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {selectedSuggestion && (
               <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm shadow-sm">
@@ -607,6 +746,7 @@ export default function SuggestEventPage() {
               <button
                 type="button"
                 disabled={isSubmitting}
+                onClick={generateNewEvent}
                 className={`w-full py-3 rounded-xl text-white text-lg font-bold shadow transition cursor-pointer submit-button relative z-10 ${
                   isSubmitting 
                     ? 'bg-gray-400 cursor-not-allowed' 

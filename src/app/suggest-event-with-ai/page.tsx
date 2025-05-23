@@ -103,19 +103,46 @@ export default function SuggestEventWithAiPage() {
 
   const canProceed = answers[step].length >= MIN_SELECTION;
 
-  // Mock API call
-  const yapayZekayaGonder = async (texts: string[]) => {
-    return new Promise(resolve => setTimeout(() => resolve('AI response'), 2200));
-  };
-
   const handleFinish = async () => {
     setLoading(true);
-    // Seçilen metinleri al
-    const allSelectedTexts = answers.flatMap(
-      (selectedIdxs, stepIdx) => selectedIdxs.map(idx => QUESTIONS[stepIdx].options[idx].label)
-    );
-    await yapayZekayaGonder(allSelectedTexts);
-    router.push('/suggest-event');
+    try {
+      // Seçilen metinleri al
+      const allSelectedTexts = answers.flatMap(
+        (selectedIdxs, stepIdx) => selectedIdxs.map(idx => QUESTIONS[stepIdx].options[idx].label)
+      );
+
+      // Backend API'ye gönder
+      const response = await fetch('http://127.0.0.1:8000/api/deneme', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          answers: allSelectedTexts
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('API yanıt vermedi');
+      }
+
+      const data = await response.json();
+      
+      // Başlık ve açıklamayı URL parametreleri olarak gönder
+      const params = new URLSearchParams({
+        title: data.title,
+        description: data.description
+      });
+
+      // Suggest event sayfasına yönlendir
+      router.push(`/suggest-event?${params.toString()}`);
+    } catch (error) {
+      console.error('API hatası:', error);
+      setLoading(false);
+      // Hata durumunda kullanıcıya bilgi ver
+      alert('Etkinlik önerisi oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
+    }
   };
 
   return (

@@ -225,16 +225,19 @@ export default function PastEventsPage() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow bg-gradient-to-br from-[#172c5c] to-[#78123e] py-8">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-white mb-8 text-center">Etkinlikler</h1>
-          <p className="text-center text-white/80 mb-8 max-w-3xl mx-auto">
-            Yazılım ve teknoloji dünyasının geleceğini birlikte keşfetmeye hazır mısınız? E tabii biraz da eğlenmeyi unutmayalım...
-          </p>
+          {/* Header with simple animation */}
+          <div className="text-center animate-fade-in">
+            <h1 className="text-3xl font-bold text-white mb-8">Etkinlikler</h1>
+            <p className="text-white/80 mb-8 max-w-3xl mx-auto">
+              Yazılım ve teknoloji dünyasının geleceğini birlikte keşfetmeye hazır mısınız? E tabii biraz da eğlenmeyi unutmayalım...
+            </p>
+          </div>
           
-          {/* Category filter - from main events page */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          {/* Category Filter with delayed animation */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12 animate-fade-in-delay-1">
             <button
               onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-pointer ${
                 selectedCategory === 'all'
                   ? 'bg-white text-[#172c5c]'
                   : 'bg-white/10 text-white hover:bg-white/20'
@@ -244,7 +247,7 @@ export default function PastEventsPage() {
             </button>
             <button
               onClick={() => setSelectedCategory('Yazılım Eğitimleri')}
-              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-pointer ${
                 selectedCategory === 'Yazılım Eğitimleri'
                   ? 'bg-white text-[#172c5c]'
                   : 'bg-white/10 text-white hover:bg-white/20'
@@ -254,7 +257,7 @@ export default function PastEventsPage() {
             </button>
             <button
               onClick={() => setSelectedCategory('Teknik Geziler')}
-              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-pointer ${
                 selectedCategory === 'Teknik Geziler'
                   ? 'bg-white text-[#172c5c]'
                   : 'bg-white/10 text-white hover:bg-white/20'
@@ -264,7 +267,7 @@ export default function PastEventsPage() {
             </button>
             <button
               onClick={() => setSelectedCategory('Konferanslar')}
-              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-pointer ${
                 selectedCategory === 'Konferanslar'
                   ? 'bg-white text-[#172c5c]'
                   : 'bg-white/10 text-white hover:bg-white/20'
@@ -274,7 +277,7 @@ export default function PastEventsPage() {
             </button>
             <button
               onClick={() => setSelectedCategory('Sosyal Faaliyetler')}
-              className={`px-4 py-2 rounded-full transition-colors cursor-pointer ${
+              className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 cursor-pointer ${
                 selectedCategory === 'Sosyal Faaliyetler'
                   ? 'bg-white text-[#172c5c]'
                   : 'bg-white/10 text-white hover:bg-white/20'
@@ -284,125 +287,131 @@ export default function PastEventsPage() {
             </button>
           </div>
           
-          {/* Past Events Section - Original Content */}
-          <h2 className="text-2xl font-bold text-white mb-6">Etkinliklerimiz</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {currentEvents.map((event) => (
-              <div key={event.id} className="bg-white/10 backdrop-blur-md rounded-xl overflow-hidden shadow-lg">
-                <div className="relative">
-                  {/* Slider */}
-                  <div className="relative h-[200px]">
-                    {event.images.map((image, index) => (
-                      <div 
-                        key={index}
-                        className={`absolute inset-0 transition-opacity duration-500 ${
-                          getCurrentSlide(event.id) === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                        }`}
-                      >
-                        <Image
-                          src={image}
-                          alt={`${event.title} etkinliği fotoğrafı ${index + 1}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ))}
-                    
-                    {/* Slider Kontrolleri */}
-                    <button 
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full z-10 transition-colors"
-                      onClick={(e) => { e.stopPropagation(); handlePrevSlide(event.id); }}
-                      aria-label="Önceki"
-                    >
-                      <ChevronLeft className="w-5 h-5" />
-                    </button>
-                    <button 
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full z-10 transition-colors"
-                      onClick={(e) => { e.stopPropagation(); handleNextSlide(event.id); }}
-                      aria-label="Sonraki"
-                    >
-                      <ChevronRight className="w-5 h-5" />
-                    </button>
-                    
-                    {/* Slide Göstergesi */}
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-                      {event.images.map((_, index) => (
+          {/* Events Section */}
+          <div className="animate-fade-in-delay-2">
+            <h2 className="text-2xl font-bold text-white mb-6">Etkinliklerimiz</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {currentEvents.map((event, index) => (
+                <div 
+                  key={event.id} 
+                  className={`bg-white/10 backdrop-blur-md rounded-xl overflow-hidden shadow-lg transition-all duration-700 hover:bg-white/15 hover:scale-[1.02] hover:shadow-2xl animate-fade-in-stagger`}
+                  style={{ animationDelay: `${0.5 + index * 0.2}s` }}
+                >
+                  <div className="relative">
+                    {/* Slider */}
+                    <div className="relative h-[200px]">
+                      {event.images.map((image, index) => (
                         <div 
                           key={index}
-                          className={`w-2 h-2 rounded-full ${
-                            getCurrentSlide(event.id) === index ? 'bg-white' : 'bg-white/50'
+                          className={`absolute inset-0 transition-opacity duration-500 ${
+                            getCurrentSlide(event.id) === index ? 'opacity-100' : 'opacity-0 pointer-events-none'
                           }`}
-                        />
+                        >
+                          <Image
+                            src={image}
+                            alt={`${event.title} etkinliği fotoğrafı ${index + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       ))}
-                    </div>
-                  </div>
-                  
-                  {/* Event Content */}
-                  <div className="p-5">
-                    <div className="mb-3">
-                      <h3 className="text-xl font-bold text-white">{event.title}</h3>
-                    </div>
-                    
-                    <p className="text-white/90 mb-4 text-sm line-clamp-3">{event.description}</p>
-                    
-                    <div className="flex justify-center">
+                      
+                      {/* Slider Kontrolleri */}
                       <button 
-                        onClick={() => openModal(event.id)}
-                        className="bg-white text-[#172c5c] px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/90 transition-colors"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full z-10 transition-colors"
+                        onClick={(e) => { e.stopPropagation(); handlePrevSlide(event.id); }}
+                        aria-label="Önceki"
                       >
-                        Fotoğrafları Gör
+                        <ChevronLeft className="w-5 h-5" />
                       </button>
+                      <button 
+                        className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/50 text-white p-2 rounded-full z-10 transition-colors"
+                        onClick={(e) => { e.stopPropagation(); handleNextSlide(event.id); }}
+                        aria-label="Sonraki"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                      
+                      {/* Slide Göstergesi */}
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                        {event.images.map((_, index) => (
+                          <div 
+                            key={index}
+                            className={`w-2 h-2 rounded-full ${
+                              getCurrentSlide(event.id) === index ? 'bg-white' : 'bg-white/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {/* Event Content */}
+                    <div className="p-5">
+                      <div className="mb-3">
+                        <h3 className="text-xl font-bold text-white">{event.title}</h3>
+                      </div>
+                      
+                      <p className="text-white/90 mb-4 text-sm line-clamp-3">{event.description}</p>
+                      
+                      <div className="flex justify-center">
+                        <button 
+                          onClick={() => openModal(event.id)}
+                          className="bg-white text-[#172c5c] px-4 py-1.5 rounded-full text-sm font-medium hover:bg-white/90 transition-colors"
+                        >
+                          Fotoğrafları Gör
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-          
-          {/* Pagination Controls */}
-          {totalPages > 1 && (
-            <div className="mt-12 flex justify-center items-center gap-2">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-full ${
-                  currentPage === 1
-                    ? 'bg-white/30 text-white/50 cursor-not-allowed'
-                    : 'bg-white text-[#172c5c] hover:bg-white/90 cursor-pointer'
-                } font-medium transition-colors`}
-              >
-                Önceki
-              </button>
-              
-              <div className="flex gap-2">
-                {[...Array(totalPages)].map((_, index) => (
-                  <button
-                    key={index + 1}
-                    onClick={() => handlePageChange(index + 1)}
-                    className={`w-10 h-10 rounded-full ${
-                      currentPage === index + 1
-                        ? 'bg-white text-[#172c5c]'
-                        : 'bg-white/20 text-white hover:bg-white/30'
-                    } font-medium transition-colors`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
-
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-full ${
-                  currentPage === totalPages
-                    ? 'bg-white/30 text-white/50 cursor-not-allowed'
-                    : 'bg-white text-[#172c5c] hover:bg-white/90 cursor-pointer'
-                } font-medium transition-colors`}
-              >
-                Sonraki
-              </button>
+              ))}
             </div>
-          )}
+            
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center items-center gap-2 animate-fade-in-delay-3">
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 ${
+                    currentPage === 1
+                      ? 'bg-white/30 text-white/50 cursor-not-allowed'
+                      : 'bg-white text-[#172c5c] hover:bg-white/90 cursor-pointer'
+                  } font-medium`}
+                >
+                  Önceki
+                </button>
+                
+                <div className="flex gap-2">
+                  {[...Array(totalPages)].map((_, index) => (
+                    <button
+                      key={index + 1}
+                      onClick={() => handlePageChange(index + 1)}
+                      className={`w-10 h-10 rounded-full transition-all duration-300 hover:scale-105 ${
+                        currentPage === index + 1
+                          ? 'bg-white text-[#172c5c]'
+                          : 'bg-white/20 text-white hover:bg-white/30'
+                      } font-medium`}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded-full transition-all duration-300 hover:scale-105 ${
+                    currentPage === totalPages
+                      ? 'bg-white/30 text-white/50 cursor-not-allowed'
+                      : 'bg-white text-[#172c5c] hover:bg-white/90 cursor-pointer'
+                  } font-medium`}
+                >
+                  Sonraki
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </main>
 
@@ -476,6 +485,44 @@ export default function PastEventsPage() {
       )}
 
       <Footer />
+
+      {/* Simple CSS animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in {
+          animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        .animate-fade-in-delay-1 {
+          animation: fadeIn 0.6s ease-out 0.2s forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in-delay-2 {
+          animation: fadeIn 0.6s ease-out 0.4s forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in-delay-3 {
+          animation: fadeIn 0.6s ease-out 0.8s forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in-stagger {
+          animation: fadeIn 0.6s ease-out forwards;
+          opacity: 0;
+        }
+      `}</style>
     </div>
   );
 } 

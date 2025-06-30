@@ -53,7 +53,7 @@ export default function JoinTeamPage() {
             <Link href="/events/calendar" className="px-6 py-3 rounded-full bg-gradient-to-r from-[#78123e] to-[#a71255] text-white font-bold text-base shadow hover:scale-105 transition-transform duration-200">
               Etkinliklerimize Katıl
             </Link>
-            <Link href="/about/team" className="px-6 py-3 rounded-full bg-white/20 text-white font-bold text-base shadow hover:scale-105 transition-transform duration-200 backdrop-blur-sm border border-white/10">
+            <Link href="/about/team" className="px-6 py-3 rounded-full bg-gradient-to-r from-[#78123e] to-[#a71255] text-white font-bold text-base shadow hover:scale-105 transition-transform duration-200">
               Ekibimizi Tanı
             </Link>
           </div>

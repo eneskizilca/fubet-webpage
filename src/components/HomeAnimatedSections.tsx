@@ -35,7 +35,7 @@ export default function HomeAnimatedSections() {
       <section ref={ref2} className={`w-full py-16 bg-white transition-all duration-700 ${inView2 ? 'animate-fade-in-up' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-4xl mx-auto px-4">
           <h2 className="text-3xl md:text-4xl font-extrabold text-center text-[#78123e] mb-12">Sponsorluk ve İşbirliklerimiz</h2>
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-8">
             {/* Flip Card */}
             <div className="flip-card">
               <div className="flip-card-inner">
@@ -45,6 +45,17 @@ export default function HomeAnimatedSections() {
                 <div className="flip-card-back absolute inset-0 bg-[#78123e] rounded-2xl shadow-xl flex flex-col items-center justify-center text-white px-4 text-center">
                   <span className="text-lg font-bold mb-2">Techcareer</span>
                   <span className="text-base">Yazılım ve kariyer konusunda bootcamp, eğitim ve etkinlik desteği anlaşması yapılmıştır.</span>
+                </div>
+              </div>
+            </div>
+            <div className="flip-card">
+              <div className="flip-card-inner">
+                <div className="flip-card-front absolute inset-0 bg-white rounded-2xl shadow-xl flex flex-col items-center justify-center">
+                  <img src="/study-point-kesik-logo.png" alt="Study Point" width={555} height={60} className="w-[555px] h-[60px] object-contain mb-2" />
+                </div>
+                <div className="flip-card-back absolute inset-0 bg-[#78123e] rounded-2xl shadow-xl flex flex-col items-center justify-center text-white px-4 text-center">
+                  <span className="text-lg font-bold mb-2">Study Point</span>
+                  <span className="text-base">Ders çalışma ofisleri, proje ekipleri kurulması, sektörel mentörlük ve eğitim desteği anlaşması yapılmıştır.</span>
                 </div>
               </div>
             </div>

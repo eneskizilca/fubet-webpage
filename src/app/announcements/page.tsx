@@ -1,7 +1,24 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Footer from '@/components/Footer';
 import { CalendarIcon, Megaphone, ChevronLeft, ChevronRight } from 'lucide-react';
+
+// useInView hook for scroll animations
+function useInView(threshold = 0.1) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const observer = new window.IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => { if (ref.current) observer.unobserve(ref.current); };
+  }, [threshold]);
+
+  return [ref, inView] as const;
+}
 
 // Mock data for announcements
 const announcementData = [
@@ -106,6 +123,10 @@ const announcementData = [
 export default function AnnouncementsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const announcementsPerPage = 6;
+  
+  // Animation refs
+  const [headerRef, headerInView] = useInView();
+  const [cardsRef, cardsInView] = useInView();
 
   // Duyuruları tarihe göre sırala (en yeni tarihli en üstte)
   const sortedAnnouncements = [...announcementData].sort((a, b) => {
@@ -139,24 +160,42 @@ export default function AnnouncementsPage() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-grow bg-gradient-to-br from-[#172c5c] to-[#78123e] py-8 pb-16">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-white mb-6 text-center">Duyurular</h1>
-          <p className="text-center text-white/80 mb-12 max-w-3xl mx-auto">
-            FÜBET topluluğunun tüm güncel duyurularını bu sayfadan takip edebilirsiniz.
-          </p>
+          {/* Animated Header */}
+          <div 
+            ref={headerRef}
+            className={`text-center transition-all duration-1000 ${
+              headerInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-10'
+            }`}
+          >
+            <h1 className="text-3xl font-bold text-white mb-6">Duyurular</h1>
+            <p className="text-white/80 mb-12 max-w-3xl mx-auto">
+              FÜBET topluluğunun tüm güncel duyurularını bu sayfadan takip edebilirsiniz.
+            </p>
+          </div>
           
-          <div className="space-y-6">
-            {currentAnnouncements.map((announcement) => (
+          {/* Animated Cards Container */}
+          <div 
+            ref={cardsRef}
+            className={`space-y-6 transition-all duration-1000 ${
+              cardsInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-10'
+            }`}
+          >
+            {currentAnnouncements.map((announcement, index) => (
               <div 
                 key={announcement.id} 
-                className={`bg-white/10 backdrop-blur-md rounded-xl overflow-hidden shadow-lg transition-all hover:bg-white/15 ${
+                className={`bg-white/10 backdrop-blur-md rounded-xl overflow-hidden shadow-lg transition-all duration-700 hover:bg-white/15 hover:scale-[1.02] hover:shadow-2xl ${
                   announcement.important ? 'border-l-4 border-yellow-400' : ''
-                }`}
+                } ${cardsInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-10'}`}
+                style={{ 
+                  animationDelay: `${index * 150}ms`,
+                  transitionDelay: `${index * 150}ms`
+                }}
               >
                 <div className="p-6">
                   <div className="flex items-start justify-between mb-2">
                     <div className="flex-1">
                       <div className="flex items-center mb-2">
-                        <Megaphone className="h-5 w-5 text-white/90 mr-2" />
+                        <Megaphone className="h-5 w-5 text-white/90 mr-2 transition-transform duration-300 hover:scale-110" />
                         <h3 className="text-xl font-bold text-white">{announcement.title}</h3>
                       </div>
                       <div className="flex items-center text-white/70 text-sm mb-3">
@@ -164,7 +203,7 @@ export default function AnnouncementsPage() {
                         <span>{formatDate(announcement.date)}</span>
                       </div>
                     </div>
-                    <span className="px-3 py-1 bg-white/20 text-white text-sm rounded-full">
+                    <span className="px-3 py-1 bg-white/20 text-white text-sm rounded-full transition-all duration-300 hover:bg-white/30">
                       {announcement.category}
                     </span>
                   </div>
@@ -177,12 +216,12 @@ export default function AnnouncementsPage() {
           
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="mt-10 flex justify-center">
+            <div className="mt-10 flex justify-center animate-fade-in-up" style={{ animationDelay: '800ms' }}>
               <div className="inline-flex rounded-md shadow-sm">
                 <button
                   onClick={() => handlePageChange(Math.max(1, currentPage - 1))}
                   disabled={currentPage === 1}
-                  className={`relative inline-flex items-center px-3 py-2 rounded-l-md border border-white/30 bg-white/10 text-sm font-medium text-white hover:bg-white/20 ${
+                  className={`relative inline-flex items-center px-3 py-2 rounded-l-md border border-white/30 bg-white/10 text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 ${
                     currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -193,7 +232,7 @@ export default function AnnouncementsPage() {
                   <button
                     key={i}
                     onClick={() => handlePageChange(i + 1)}
-                    className={`relative inline-flex items-center px-4 py-2 border border-white/30 text-sm font-medium ${
+                    className={`relative inline-flex items-center px-4 py-2 border border-white/30 text-sm font-medium transition-all duration-300 hover:scale-105 ${
                       currentPage === i + 1
                         ? 'bg-white text-[#172c5c] hover:bg-white/90'
                         : 'bg-white/10 text-white hover:bg-white/20'
@@ -206,7 +245,7 @@ export default function AnnouncementsPage() {
                 <button
                   onClick={() => handlePageChange(Math.min(totalPages, currentPage + 1))}
                   disabled={currentPage === totalPages}
-                  className={`relative inline-flex items-center px-3 py-2 rounded-r-md border border-white/30 bg-white/10 text-sm font-medium text-white hover:bg-white/20 ${
+                  className={`relative inline-flex items-center px-3 py-2 rounded-r-md border border-white/30 bg-white/10 text-sm font-medium text-white hover:bg-white/20 transition-all duration-300 hover:scale-105 ${
                     currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -218,6 +257,30 @@ export default function AnnouncementsPage() {
         </div>
       </main>
       <Footer />
+
+      {/* Custom CSS for animations */}
+      <style jsx>{`
+        @keyframes fade-in-up {
+          0% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out forwards;
+        }
+
+        /* Smooth page transitions */
+        .transition-all {
+          transition-property: all;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+      `}</style>
     </div>
   );
 } 

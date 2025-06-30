@@ -5,24 +5,31 @@ import { useState, useRef, createContext, useContext, useEffect } from 'react';
 import { useSuggestEventHover } from '../context/SuggestEventHoverContext';
 import { useRouter, usePathname } from 'next/navigation';
 
+// Etkinlik öner butonunun hover durumu için context
 export const SuggestEventHoverContext = createContext({
   isSuggestEventHovered: false,
   setIsSuggestEventHovered: (v: boolean) => {},
 });
 
 export default function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [showSpotlight, setShowSpotlight] = useState(false);
+  // State yönetimleri
+  const [menuOpen, setMenuOpen] = useState(false); // Mobil menü açık/kapalı
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null); // Hangi dropdown açık
+  const [showSpotlight, setShowSpotlight] = useState(false); // Spotlight efekti
+  const [showSuggestModal, setShowSuggestModal] = useState(false); // Etkinlik öner modalı
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Kullanıcı giriş durumu
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false); // Çıkış onay modalı
+  
+  // Ref'ler - timeout yönetimi için
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
   const spotlightTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  
+  // Context ve router
   const { isSuggestEventHovered, setIsSuggestEventHovered } = useSuggestEventHover();
-  const [showSuggestModal, setShowSuggestModal] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
+  // Kullanıcı kimlik doğrulama kontrolü
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem('token');
@@ -51,6 +58,7 @@ export default function Navbar() {
     
     checkAuth();
     
+    // Storage değişikliklerini dinle (çoklu sekme desteği)
     const handleStorageChange = () => {
       checkAuth();
     };
@@ -62,6 +70,7 @@ export default function Navbar() {
     };
   }, [router, pathname]);
   
+  // Çıkış yapma işlemleri
   const handleLogoutClick = () => {
     setShowLogoutConfirm(true);
   };
@@ -85,6 +94,7 @@ export default function Navbar() {
     router.push('/');
   };
 
+  // Kullanıcı adının baş harflerini al (avatar için)
   const getUserInitials = () => {
     try {
       const userStr = localStorage.getItem('user');
@@ -101,6 +111,7 @@ export default function Navbar() {
     }
   };
 
+  // Dropdown menü işlemleri
   const handleDropdownClick = (dropdownName: string) => {
     if (activeDropdown === dropdownName) {
       setActiveDropdown(null);
@@ -119,9 +130,10 @@ export default function Navbar() {
   const handleDropdownMouseLeave = () => {
     dropdownTimeoutRef.current = setTimeout(() => {
       setActiveDropdown(null);
-    }, 150); // 300ms'den 150ms'ye düşürüldü
+    }, 150); // 150ms gecikme ile kapat
   };
 
+  // Spotlight efekti işlemleri
   const handleSpotlightEnter = () => {
     if (spotlightTimeoutRef.current) {
       clearTimeout(spotlightTimeoutRef.current);
@@ -132,14 +144,14 @@ export default function Navbar() {
   const handleSpotlightLeave = () => {
     spotlightTimeoutRef.current = setTimeout(() => {
       setShowSpotlight(false);
-    }, 100); // 300ms'den 100ms'ye düşürüldü
+    }, 100); // 100ms gecikme ile kapat
   };
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
+          {/* Logo Bölümü */}
           <div className="flex-shrink-0 flex items-center">
             <Link href="/" className="flex items-center">
               <span className="w-px h-8 bg-[#78123e] mr-3 block" />
@@ -147,13 +159,15 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Menu */}
+          {/* Masaüstü Menü */}
           <div className="hidden md:flex space-x-4 items-center">
+            {/* Ana Sayfa Linki */}
             <Link href="/" className="px-2 text-gray-700 hover:text-[#78123e] font-medium transition duration-200">Ana Sayfa</Link>
 
+            {/* Duyurular Linki */}
             <Link href="/announcements" className="px-2 text-gray-700 hover:text-[#78123e] font-medium transition duration-200">Duyurular</Link>
 
-            {/* Etkinlikler */}
+            {/* Etkinlikler Dropdown Menüsü */}
             <div 
               className="relative px-2"
               onMouseEnter={() => handleDropdownMouseEnter('etkinlikler')}
@@ -164,6 +178,7 @@ export default function Navbar() {
               >
                 Etkinlikler
               </span>
+              {/* Dropdown İçeriği */}
               <div className={`absolute left-0 mt-2 w-fit min-w-max bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform origin-top transition-all duration-200 z-50 ${
                 activeDropdown === 'etkinlikler' ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'
               }`}>
@@ -182,7 +197,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Etkinlik Öner */}
+            {/* Etkinlik Öner Bölümü - Yapay Zeka ile */}
             <div className="relative px-2"
               onMouseEnter={() => setIsSuggestEventHovered(true)}
               onMouseLeave={() => setIsSuggestEventHovered(false)}
@@ -193,6 +208,7 @@ export default function Navbar() {
                 onClick={() => setShowSuggestModal(true)}
               >
                 Etkinlik Öner
+                {/* Yapay Zeka İkonu */}
                 <div className="flex items-center justify-center relative">
                   <Image
                     src="/ai2.png"
@@ -203,7 +219,8 @@ export default function Navbar() {
                   />
                 </div>
               </button>
-              {/* Speech Bubble Popup */}
+              
+              {/* Hover Popup - Yapay Zeka Tanıtımı */}
               <div 
                 className={`absolute top-[120%] left-0 w-[300px] bg-white/90 transition-all duration-200 transform border border-white/20 rounded-xl shadow-lg ${
                   isSuggestEventHovered && !showSuggestModal ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2 pointer-events-none'
@@ -217,15 +234,18 @@ export default function Navbar() {
                     Senin seçimlerin ve yapay zekanın sihirli fikirleri ile bir etkinlik önerisi yarat!
                   </div>
                 </div>
+                {/* Popup Ok İşareti */}
                 <div className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 bg-white/90 transform rotate-45 border-r border-b border-white/20"></div>
               </div>
-              {/* Modal */}
+              
+              {/* Etkinlik Öner Modalı */}
               {showSuggestModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40" onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); }}>
                   <div
                     className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col items-center gap-6 min-w-[320px] max-w-[90vw] relative"
                     onClick={e => e.stopPropagation()}
                   >
+                    {/* Modal Kapatma Butonu */}
                     <button
                       className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl"
                       onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); }}
@@ -233,13 +253,18 @@ export default function Navbar() {
                     >
                       ×
                     </button>
+                    
                     <h2 className="text-2xl font-bold text-[#78123e] mb-2 text-center">Etkinlik Öner</h2>
+                    
+                    {/* Kendi Fikrim Var Butonu */}
                     <button
                       className="w-full py-4 rounded-xl bg-[#78123e] text-white text-lg font-bold shadow hover:bg-[#5a0e2c] transition mb-2"
                       onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); router.push('/suggest-event'); }}
                     >
                       Bir Fikrim Var!
                     </button>
+                    
+                    {/* Yapay Zeka ile Fikir Oluştur Butonu */}
                     <button
                       className="w-full py-4 rounded-xl bg-white border-2 border-[#78123e] text-[#78123e] text-lg font-bold shadow hover:bg-[#f3e6ee] transition"
                       onClick={() => { setShowSuggestModal(false); setIsSuggestEventHovered(false); router.push('/suggest-event-with-ai'); }}
@@ -251,7 +276,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Hakkımızda */}
+            {/* Hakkımızda Linki */}
             <div 
               className="relative px-2"
               onMouseEnter={() => handleDropdownMouseEnter('hakkimizda')}
@@ -281,7 +306,7 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Bize Ulaşın */}
+            {/* Bize Ulaşın Linki */}
             <Link href="/contact" className="px-2 text-gray-700 hover:text-[#78123e] font-medium transition duration-200">Bize Ulaşın</Link>
 
             {/* Auth */}
